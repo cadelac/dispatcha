@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cadelac.framework</groupId>
+  <artifactId>blade</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Blade Framework</name>
+  <description>Message passing based framework</description>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.logging</groupId>
+  		<artifactId>log4j-core</artifactId>
+  		<version>1.2.16</version>
+  	</dependency>
+  	<dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-web-api</artifactId>
+        <version>7.0</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <version>1.0.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.glassfish.tyrus</groupId>
+    	<artifactId>tyrus-container-grizzly-server</artifactId>
+    	<version>1.8.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.glassfish.tyrus</groupId>
+    	<artifactId>tyrus-client</artifactId>
+    	<version>1.8.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.glassfish.tyrus</groupId>
+    	<artifactId>tyrus-server</artifactId>
+    	<version>1.8.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>javax.websocket</groupId>
+    	<artifactId>javax.websocket-api</artifactId>
+    	<version>1.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>cadelac.lib</groupId>
+    	<artifactId>primitive</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>
