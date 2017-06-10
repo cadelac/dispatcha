@@ -36,7 +36,7 @@ The application programmer is freed from the minutiae of managing the State.
 
 A Handler defines a @FunctionalInterface StateIdMapper. This allows the Handler to name the State the Handler will operate on.
 
-`@FunctionalInterface
+	`@FunctionalInterface
 public interface StateIdMapper<M extends Message> {
 	public String getStateId(final M message);
 }
@@ -46,7 +46,7 @@ public interface StateIdMapper<M extends Message> {
 
 A Handler defines a @FunctionalInterface StateIdMapper. This allows the Handler to specify how State will be created.
 
-`@FunctionalInterface
+	`@FunctionalInterface
 public interface StateCreator<M extends Message, S extends State> {
 	public S createState(final M message_) throws Exception;
 }
@@ -67,10 +67,3 @@ Call get() on the future to retrieve response of type Response<T>
 Call getException() on response to get Exception, if any
 
 Call getResponse() on response to get returned value of handler
-
-
-
-
-
-
- 
