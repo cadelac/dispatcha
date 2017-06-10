@@ -170,3 +170,68 @@ Send a message to a PULL HANDLER and retrieve return value
     }
 
 
+## Application
+
+An application must be a subclass of ApplicationSimple and implement init():
+
+    public class AppServer extends ApplicationSimple {
+
+        public AppServer(final String applicationName_, final String[] args_) {
+            super(applicationName_, args_);
+        }
+
+        @Override
+        public void init() throws FrameworkException, Exception {
+            // set up PUSH and PULL Handlers by calling Dispatch.bind()
+        }
+    }
+
+## Configuration and Start Up
+
+The full-path of the configuration file is passed as an argument during start up:
+
+    $ java cadelac.app.realtime.Main \
+    > --properties.path=/u/cadelac.app.realtime/config/server-realtime.conf
+
+The configuration file server-realtime.conf may look like:
+
+    #---------------------------------------------------------------------
+    # FRAMEWORK
+
+    # We need to specify logger configuration (properties) file here...
+    logger.config.file=/u/cadelac.app.realtime/config/server-log4j.properties
+
+    # This is where generated code and classes are stored
+    compiler.user.dir=/u/cadelac.app.realtime/runtime/autogen/server
+    
+    #---------------------------------------------------------------------
+    # Application specific configuration goes here...
+    #---------------------------------------------------------------------
+    
+Sample logger configuration:
+
+    log4j.rootLogger=info, stdout, R
+    
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    
+    # Pattern to output the caller's file name and line number.
+    log4j.appender.stdout.layout.ConversionPattern=%r %5p [%t] (%F:%L) - %m%n
+    
+    log4j.appender.R=org.apache.log4j.RollingFileAppender
+    log4j.appender.R.File=/u/cadelac.app.realtime/runtime/log/server-realtime.log
+    
+    log4j.appender.R.MaxFileSize=1024KB
+    # Keep one backup file
+    log4j.appender.R.MaxBackupIndex=1
+    
+    log4j.appender.R.layout=org.apache.log4j.PatternLayout
+    log4j.appender.R.layout.ConversionPattern=%d %r %p %t %c - %m%n
+    
+
+
+
+
+
+
+
