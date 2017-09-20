@@ -17,15 +17,15 @@ A Message is intended to be an immutable object and should not be changed by Han
 Define a Message:
 
     public interface SessionIdCheck extends Message {
-        public ApiEnvelope getApiEnvelope();
-        public void setApiEnvelope(ApiEnvelope apiEnvelope);
+        ApiEnvelope getApiEnvelope();
+        void setApiEnvelope(ApiEnvelope apiEnvelope);
     }
 
 ## Object Factory
 
 Create a Message:
 
-    final SessionIdCheck sessionIdCheck = 
+    final SessionIdCheck sessionIdCheck =
         Framework.getObjectFactory().fabricate(
             SessionIdCheck.class
             , p -> {
@@ -47,7 +47,7 @@ A Handler should not contain any data.
 
 ## State
 
-State is a named--has a getId() method--object that contains the data that a Handler operates on. The framework automatically manages the State and injects the State into the Handler when invoked together with the Message. 
+State is a named--has a getId() method--object that contains the data that a Handler operates on. The framework automatically manages the State and injects the State into the Handler when invoked together with the Message.
 
 The application programmer is freed from the minutiae of managing the State.
 
@@ -95,7 +95,7 @@ A PUSH Handler is created by instantiating
 
 like so:
 
-    final Push<GetQuestionsMsg,QuestionManagerState> push = 
+    final Push<GetQuestionsMsg,QuestionManagerState> push =
         new PushBase<GetQuestionsMsg,QuestionManagerState>(
             GetQuestionsMsg.OPERATION // id
             , (GetQuestionsMsg msg, QuestionManagerState state) -> {
@@ -104,7 +104,7 @@ like so:
             , m -> {
                 return buildQuestionManagerStateId((LoginMsg) m.getSessionRecord().getApiMsg());
             }
-            , m -> { 
+            , m -> {
                 return new QuestionManagerState(buildQuestionManagerStateId((LoginMsg) m.getSessionRecord().getApiMsg());
             }
         );
@@ -117,7 +117,7 @@ A PULL Handler is created by instantiating
 
 like so:
 
-    final Pull<ApiEnvelope,GetQuestionsMsg,QuestionManagerState> pull = 
+    final Pull<ApiEnvelope,GetQuestionsMsg,QuestionManagerState> pull =
         new PullBase<ApiEnvelope,GetQuestionsMsg,QuestionManagerState>(
             GetQuestionsMsg.OPERATION // id
             , (GetQuestionsMsg msg, QuestionManagerState state) -> {
@@ -128,7 +128,7 @@ like so:
             , m -> {
                 return buildQuestionManagerStateId((LoginMsg) m.getSessionRecord().getApiMsg());
             }
-            , m -> { 
+            , m -> {
                 return new QuestionManagerState(buildQuestionManagerStateId((LoginMsg) m.getSessionRecord().getApiMsg());
             }
         );
@@ -191,7 +191,7 @@ An application must be a subclass of ApplicationSimple and implement init():
 The full-path of the configuration file is passed as an argument during start up:
 
     $ java cadelac.app.realtime.Main \
-    > --properties.path=/u/cadelac.app.realtime/config/server-realtime.conf
+    > -properties.path=/u/cadelac.app.realtime/config/server-realtime.conf
 
 The configuration file server-realtime.conf may look like:
 
@@ -203,35 +203,27 @@ The configuration file server-realtime.conf may look like:
 
     # This is where generated code and classes are stored
     compiler.user.dir=/u/cadelac.app.realtime/runtime/autogen/server
-    
+
     #---------------------------------------------------------------------
     # Application specific configuration goes here...
     #---------------------------------------------------------------------
-    
+
 Sample logger configuration:
 
     log4j.rootLogger=info, stdout, R
-    
+
     log4j.appender.stdout=org.apache.log4j.ConsoleAppender
     log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-    
+
     # Pattern to output the caller's file name and line number.
     log4j.appender.stdout.layout.ConversionPattern=%r %5p [%t] (%F:%L) - %m%n
-    
+
     log4j.appender.R=org.apache.log4j.RollingFileAppender
     log4j.appender.R.File=/u/cadelac.app.realtime/runtime/log/server-realtime.log
-    
+
     log4j.appender.R.MaxFileSize=1024KB
     # Keep one backup file
     log4j.appender.R.MaxBackupIndex=1
-    
+
     log4j.appender.R.layout=org.apache.log4j.PatternLayout
     log4j.appender.R.layout.ConversionPattern=%d %r %p %t %c - %m%n
-    
-
-
-
-
-
-
-

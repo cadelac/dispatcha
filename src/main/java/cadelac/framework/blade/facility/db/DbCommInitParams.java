@@ -1,9 +1,8 @@
 package cadelac.framework.blade.facility.db;
 
+import cadelac.framework.blade.comm.CommCredentials;
 import cadelac.framework.blade.comm.CommInitParams;
-import cadelac.lib.primitive.comm.CommCredentials;
-import cadelac.lib.primitive.comm.CommUrl;
-import cadelac.lib.primitive.db.DbCommUrl;
+import cadelac.framework.blade.comm.CommUrl;
 
 public class DbCommInitParams implements CommInitParams {
 
