@@ -20,12 +20,15 @@ import javax.json.JsonObjectBuilder;
 import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
+import cadelac.framework.blade.core.code.annotation.ColumnName;
+import cadelac.framework.blade.core.code.annotation.FlattenAs;
+import cadelac.framework.blade.core.code.annotation.InflateAs;
+import cadelac.framework.blade.core.code.annotation.MarshallNo;
+import cadelac.framework.blade.core.code.annotation.TableName;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.exception.JsonMessageException;
-import cadelac.framework.blade.facility.db.ColumnName;
 import cadelac.framework.blade.facility.db.DbCommConnection;
-import cadelac.framework.blade.facility.db.TableName;
 
 public abstract class Marshallable implements Message {
 
@@ -258,28 +261,6 @@ public abstract class Marshallable implements Message {
 				setMethod.invoke(this, resultSet_.getBoolean(columnNameAnnotation.value()));
 			}
 		}
-		
-		/*
-		for (Method method : aClass.getMethods()) {
-			if (method.getName().startsWith("set")) {
-				// only set methods have Column annotations
-				final Annotation[] annotations = method.getAnnotations();
-				for (Annotation annotation : annotations) {
-					if (annotation instanceof ColumnName){
-						final ColumnName columnName = (ColumnName) annotation;
-						final Class<?>[] formal_parameters = method.getParameterTypes();
-						// we expect only one parameter
-						if (formal_parameters[0] == Integer.TYPE) {
-							method.invoke(this, resultSet_.getInt(columnName.value()));
-						}
-						else if (formal_parameters[0] == String.class) {
-							method.invoke(this, resultSet_.getString(columnName.value()));
-						}
-					}
-				}
-			}
-		}
-		*/
 	}
 	
 	

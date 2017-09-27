@@ -75,7 +75,7 @@ public class Framework {
 		return _bootTime;
 	}
 
-	public static void setBoottime(final long bootTime_) {
+	public static void setBootTime(final long bootTime_) {
 		_bootTime = bootTime_;
 	}
 	

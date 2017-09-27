@@ -12,15 +12,15 @@ import java.util.function.Consumer;
 import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
+import cadelac.framework.blade.core.code.annotation.ColumnName;
+import cadelac.framework.blade.core.code.annotation.FlattenAs;
+import cadelac.framework.blade.core.code.annotation.InflateAs;
+import cadelac.framework.blade.core.code.annotation.MarshallNo;
+import cadelac.framework.blade.core.code.annotation.TableName;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.JsonMessageException;
-import cadelac.framework.blade.core.message.FlattenAs;
-import cadelac.framework.blade.core.message.InflateAs;
-import cadelac.framework.blade.core.message.MarshallNo;
 import cadelac.framework.blade.core.message.Marshallable;
 import cadelac.framework.blade.core.message.Message;
-import cadelac.framework.blade.facility.db.ColumnName;
-import cadelac.framework.blade.facility.db.TableName;
 
 public class CodeGenerator {
 

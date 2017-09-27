@@ -8,9 +8,6 @@ import cadelac.framework.blade.core.message.Message;
  *
  */
 public interface BootMsg extends Message {
-	
-	public static final String OPERATION = "boot-time";
-	
 	long getBootTime();
 	void setBootTime(long bootTime);
 }

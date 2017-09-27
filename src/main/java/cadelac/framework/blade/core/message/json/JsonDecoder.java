@@ -15,7 +15,6 @@ public class JsonDecoder {
 
 	public static boolean willDecode(String message_) {
 		try {
-			//Json.createReader(new StringReader(message_)).readObject();
 			Json.createReader(new StringReader(message_)).read();
 			return true;
 		}

@@ -1,8 +1,10 @@
 package cadelac.framework.blade.app;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -12,7 +14,6 @@ import cadelac.framework.blade.core.BootMsg;
 import cadelac.framework.blade.core.CommandSwitch;
 import cadelac.framework.blade.core.Identified;
 import cadelac.framework.blade.core.IdentifiedBase;
-import cadelac.framework.blade.core.Log;
 import cadelac.framework.blade.core.PropertiesManager;
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.code.compiler.DefaultCompiler;
@@ -21,6 +22,7 @@ import cadelac.framework.blade.core.config.Configurator;
 import cadelac.framework.blade.core.dispatch.Dispatch;
 import cadelac.framework.blade.core.dispatch.Push;
 import cadelac.framework.blade.core.dispatch.PushBase;
+import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.message.Message;
@@ -30,16 +32,16 @@ import cadelac.framework.blade.core.object.Prototype2ConcreteMapSimple;
 import cadelac.framework.blade.core.state.StateLess;
 
 
-public abstract 
-class ApplicationSimple extends IdentifiedBase implements Application, Identified 
+public abstract class ApplicationSimple 
+	extends IdentifiedBase implements Application, Identified 
 {
 	public ApplicationSimple(final String applicationName_, final String[] arguments_) {
 		super(applicationName_);
 		_arguments = arguments_;
-		
 	}
 	
-	public void start() throws FrameworkException, Exception {
+	public void start() 
+			throws FrameworkException, Exception {
 		// boot up the framework
 		boot(); 
 		logger.info("booted up framework");
@@ -49,47 +51,25 @@ class ApplicationSimple extends IdentifiedBase implements Application, Identifie
 		init();
 	}
 	
-	private void boot() throws Exception {
+	private void boot() 
+			throws Exception {
+		
 		// basic logger configuration
-		Log.configure();
+		BasicConfigurator.configure();
+		logger.info("configured logger with basic configuration");
 		
 		Framework.setApplication(this);
 
 		Framework.setRpcTable(new ConcurrentHashMap<Long,RpcTicket<? extends Message>>());
+
+		captureCommandSwitches();
 		
-		// capture command line arguments/switches
-		final CommandSwitch commandSwitch = new CommandSwitch();
-		commandSwitch.populate(_arguments);
-		Framework.setCommandSwitch(commandSwitch);
-		
-		// get full path of properties file
-		final String propertiesPathArg = commandSwitch.getArgument(ConfigParameters.PROPERTIES_PATH_ARG);
-		if (propertiesPathArg == null)
-			throw new InitializationException("Properties full path must not be empty");
-		Framework.setPropertiesFullPathName(propertiesPathArg);
-		
-		// create properties manager
-		final PropertiesManager pm = new PropertiesManager(propertiesPathArg);
-		Framework.setPropertiesManager(pm);
-		
-		// configure logger
-		final Properties props = pm.getProperties();
-		final String loggerConfigFile = props.getProperty(ConfigParameters.LOGGER_CONFIG_FILE_PATH);
-		if (loggerConfigFile != null) {
-			PropertyConfigurator.configure(loggerConfigFile);
-			logger.info("configured logger with log file configuration");
-		}
-		
-		// create and set compiler
-		final String argRepo = commandSwitch.getArgument(ConfigParameters.COMPILER_USER_DIR);
-		final String compilerUserDir = props.getProperty(ConfigParameters.COMPILER_USER_DIR);
-		if (argRepo != null && !argRepo.isEmpty())
-			Framework.setCompiler(new DefaultCompiler(argRepo));
-		else if (compilerUserDir != null && !compilerUserDir.isEmpty())
-			Framework.setCompiler(new DefaultCompiler(compilerUserDir));
-		else
-			Framework.setCompiler(new DefaultCompiler());
-		
+		configureProperties();
+
+		configureLogger();
+
+		configureCompiler();
+
 		// create and set object look up
 		Framework.setPrototype2ConcreteMap(new Prototype2ConcreteMapSimple());
 		
@@ -106,26 +86,71 @@ class ApplicationSimple extends IdentifiedBase implements Application, Identifie
 		
 		Framework.setMessageDigestIsEnabled(Configurator.getMessageDigestIsEnabled());
 		
+		primeThePump();
+	}
+	
+	private void configureProperties() 
+			throws InitializationException, ArgumentException, IOException {
+		// get full path of properties file
+		final String propertiesPathArg = 
+				Framework.getCommandSwitch()
+				.getArgument(ConfigParameters.PROPERTIES_PATH_ARG);
+		if (propertiesPathArg == null || propertiesPathArg.isEmpty())
+			throw new InitializationException("Properties full path must not be empty");
+		
+		// create properties manager
+		Framework.setPropertiesFullPathName(propertiesPathArg);
+		Framework.setPropertiesManager(new PropertiesManager(propertiesPathArg));
+	}
+
+	private void configureLogger() {
+		final Properties props = Framework.getPropertiesManager().getProperties();
+		final String loggerConfigFile = props.getProperty(ConfigParameters.LOGGER_CONFIG_FILE_PATH);
+		if (loggerConfigFile != null && !loggerConfigFile.isEmpty()) {
+			PropertyConfigurator.configure(loggerConfigFile);
+			logger.info(String.format("configured logger with: [%s]", loggerConfigFile));
+		}
+	}
+	
+	private void configureCompiler() {
+		final String argRepo = 
+				Framework.getCommandSwitch()
+				.getArgument(ConfigParameters.COMPILER_USER_DIR);
+		
+		final String compilerUserDir = 
+				Framework.getPropertiesManager()
+				.getProperties()
+				.getProperty(ConfigParameters.COMPILER_USER_DIR);
+		
+		if (argRepo != null && !argRepo.isEmpty())
+			Framework.setCompiler(new DefaultCompiler(argRepo));
+		else if (compilerUserDir != null && !compilerUserDir.isEmpty())
+			Framework.setCompiler(new DefaultCompiler(compilerUserDir));
+		else
+			Framework.setCompiler(new DefaultCompiler());
+	}
+	
+	private void primeThePump() 
+			throws Exception {
 		// complete boot process by sending a message (prevents application from exiting)
 		final Push<BootMsg,StateLess> bootPushHandler = 
 				new PushBase<BootMsg,StateLess>(
 						"BootHandler"
 						, (msg_,state) -> {
-							if (Framework.getBootTime()!=0) {
-								final long bootTime = Utilities.getTimestamp();
-								Framework.setBoottime(bootTime);
-								logger.info(String.format("booting: timestamp: %d", bootTime));
-							}
+							Framework.setBootTime(Utilities.getTimestamp());
+							logger.info(String.format("booting: timestamp: %d", Framework.getBootTime()));
 						}
 						, m -> StateLess.STATELESS_STATE_ID
 						, m -> StateLess.STATELESS_STATE
 				);
 		Dispatch.bind(BootMsg.class, bootPushHandler);
-		Dispatch.push(Framework.getObjectFactory().fabricate(
-				BootMsg.class
-				, p -> {
-					p.setBootTime(Utilities.getTimestamp());
-				}));
+		Dispatch.push(Framework.getObjectFactory().fabricate(BootMsg.class));
+	}
+
+	private void captureCommandSwitches() throws ArgumentException {
+		final CommandSwitch commandSwitch = new CommandSwitch();
+		commandSwitch.populate(_arguments);
+		Framework.setCommandSwitch(commandSwitch);
 	}
 	
 	private long calculateQuantum() {

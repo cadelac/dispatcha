@@ -1,12 +1,12 @@
-package cadelac.framework.blade.core.message;
+package cadelac.framework.blade.core.code.annotation;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
-public @interface InflateAs {
+public @interface ColumnName {
 	String   value();
 }
