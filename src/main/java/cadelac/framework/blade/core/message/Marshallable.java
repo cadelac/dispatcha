@@ -36,12 +36,14 @@ public abstract class Marshallable implements Message {
 	public void marshall(final JsonObjectBuilder jbuilder) {
 		final Class<?> aClass = this.getClass();
 		for (Field field : aClass.getDeclaredFields()) {
-			final MarshallNo skipMarshall = (MarshallNo) field.getAnnotation(MarshallNo.class);
+			final MarshallNo skipMarshall = 
+					(MarshallNo) field.getAnnotation(MarshallNo.class);
 			if (skipMarshall==null) {
 				// annotation not found => we go ahead and marshall the field...
 				//getter
 				final FlattenAs flatten = field.getAnnotation(FlattenAs.class);
-				final String fieldName = (flatten==null) ? field.getName() : flatten.value();
+				final String fieldName = 
+						(flatten==null) ? field.getName() : flatten.value();
 				final Class<?> fieldType = field.getType();
 				try {
 					if (fieldType.isPrimitive()) {
@@ -71,7 +73,11 @@ public abstract class Marshallable implements Message {
 						marshallObject(field, jbuilder);
 					}
 			    }
-				catch (IllegalArgumentException | IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
+				catch (IllegalArgumentException 
+						| IllegalAccessException 
+						| NoSuchMethodException 
+						| SecurityException 
+						| InvocationTargetException e) {
 					e.printStackTrace();
 				}
 			}
@@ -85,23 +91,34 @@ public abstract class Marshallable implements Message {
 	}
 
 	public void marshall(final DbCommConnection connection_) 
-			throws InitializationException, SQLException, NoSuchMethodException, SecurityException
-			, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			throws InitializationException
+			, SQLException
+			, NoSuchMethodException
+			, SecurityException
+			, IllegalAccessException
+			, IllegalArgumentException
+			, InvocationTargetException {
 		
 		final Class<?> aClass = this.getClass();
 		
 		final TableName tableName = aClass.getAnnotation(TableName.class);
 		if (tableName == null) {
 			throw new InitializationException(
-					String.format("Message %s does not have @TableName annotation", aClass.getSimpleName()));
+					String.format(
+							"Message %s does not have @TableName annotation"
+							, aClass.getSimpleName()));
 		}
 
-		final StringBuilder columnNames = new StringBuilder(); // comma-separated list of column names
-		final StringBuilder placeHolders = new StringBuilder(); // comma-separated list of place holders
+		// comma-separated list of column names
+		final StringBuilder columnNames = new StringBuilder(); 
+		// comma-separated list of place holders
+		final StringBuilder placeHolders = new StringBuilder(); 
 		
-		final List<Field> columnNamedFields = getColumnNamedFields(aClass); // for preserving correct order of columns...
+		// for preserving correct order of columns...
+		final List<Field> columnNamedFields = getColumnNamedFields(aClass); 
 		for (Field field : columnNamedFields) {
-			final ColumnName columnName = (ColumnName) field.getAnnotation(ColumnName.class);
+			final ColumnName columnName = 
+					(ColumnName) field.getAnnotation(ColumnName.class);
 			if (columnNames.length()>0) {
 				columnNames.append(", ");
 				placeHolders.append(", ");
@@ -125,11 +142,12 @@ public abstract class Marshallable implements Message {
 		// bind values to parameters (placeholder)
 		
 		final String queryString = queryStringBuilder.toString();
-		final PreparedStatement preparedStatement = connection_.getConnection().prepareStatement(
-				queryString);
+		final PreparedStatement preparedStatement = 
+				connection_.getConnection().prepareStatement(queryString);
 		int i = 1;
 		for (Field field : columnNamedFields) {
-			final Method getMethod = aClass.getDeclaredMethod("get" + field.getName());
+			final Method getMethod = 
+					aClass.getDeclaredMethod("get" + field.getName());
 			if (field.getType() == Integer.TYPE){
 				final int value = (int) getMethod.invoke(this);
 				preparedStatement.setInt(i, value);
@@ -162,11 +180,13 @@ public abstract class Marshallable implements Message {
 			throws Exception, JsonMessageException {
 		final Class<?> aClass = this.getClass();
 		for (Field field : aClass.getDeclaredFields()) {
-			final MarshallNo skipMarshall = (MarshallNo) field.getAnnotation(MarshallNo.class);
+			final MarshallNo skipMarshall = 
+					(MarshallNo) field.getAnnotation(MarshallNo.class);
 			if (skipMarshall==null) {
 				// setter
 				final InflateAs inflate = field.getAnnotation(InflateAs.class);
-				final String fieldName = (inflate==null) ? field.getName() : inflate.value();
+				final String fieldName = 
+						(inflate==null) ? field.getName() : inflate.value();
 				final Class<?> fieldType = field.getType();
 				try {
 					if (fieldType.isPrimitive()) {
@@ -211,22 +231,31 @@ public abstract class Marshallable implements Message {
 						}
 					}
 				}
-				catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+				catch (IllegalArgumentException 
+						| IllegalAccessException 
+						| InstantiationException e) {
 					e.printStackTrace();
 				}
 				catch (JsonMessageException j) {
-					throw new JsonMessageException(String.format("field: %s: %s", field.getName(), j.getMessage())); 
+					throw new JsonMessageException(
+							String.format(
+									"field: %s: %s"
+									, field.getName()
+									, j.getMessage())); 
 				}
 				catch (Exception e) {
-					throw new Exception(String.format("field: %s: %s", field.getName(), e.getMessage())); 
+					throw new Exception(
+							String.format(
+									"field: %s: %s"
+									, field.getName()
+									, e.getMessage())); 
 				}
 			}
 			else
-				logger.debug(
-						String.format(
-								"MarshallNo Annotation found: demarshalling %s.%s, skipped"
-								, aClass.getSimpleName()
-								, field.getName()));
+				logger.debug(String.format(
+						"@MarshallNo found: demarshalling %s.%s, skipped"
+						, aClass.getSimpleName()
+						, field.getName()));
 		}
 	}
 
@@ -235,30 +264,54 @@ public abstract class Marshallable implements Message {
 			throws Exception {
 		final Class<?> aClass = this.getClass();
 
-		final List<Field> columnNamedFields = getColumnNamedFields(aClass); // for preserving correct order of columns...
+		// for preserving correct order of columns...
+		final List<Field> columnNamedFields = 
+				getColumnNamedFields(aClass);
+		
 		for (Field field : columnNamedFields) {
-			final ColumnName columnNameAnnotation = (ColumnName) field.getAnnotation(ColumnName.class);
+			final ColumnName columnNameAnnotation = 
+					(ColumnName) field.getAnnotation(ColumnName.class);
 			// acquire "set" method
 			
 			if (field.getType() == Integer.TYPE){
-				final Method setMethod = aClass.getDeclaredMethod("set" + field.getName(), Integer.TYPE);
-				setMethod.invoke(this, resultSet_.getInt(columnNameAnnotation.value()));
+				final Method setMethod = 
+						aClass.getDeclaredMethod(
+								"set" + field.getName(), Integer.TYPE);
+				setMethod.invoke(
+						this
+						, resultSet_.getInt(columnNameAnnotation.value()));
 			}
 			if (field.getType() == Long.TYPE){
-				final Method setMethod = aClass.getDeclaredMethod("set" + field.getName(), Long.TYPE);
-				setMethod.invoke(this, resultSet_.getLong(columnNameAnnotation.value()));
+				final Method setMethod = 
+						aClass.getDeclaredMethod(
+								"set" + field.getName(), Long.TYPE);
+				setMethod.invoke(
+						this
+						, resultSet_.getLong(columnNameAnnotation.value()));
 			}
 			else if (field.getType() == Double.TYPE){
-				final Method setMethod = aClass.getDeclaredMethod("set" + field.getName(), Double.TYPE);
-				setMethod.invoke(this, resultSet_.getDouble(columnNameAnnotation.value()));
+				final Method setMethod = 
+						aClass.getDeclaredMethod(
+								"set" + field.getName(), Double.TYPE);
+				setMethod.invoke(
+						this
+						, resultSet_.getDouble(columnNameAnnotation.value()));
 			}
 			else if (field.getType() == String.class){
-				final Method setMethod = aClass.getDeclaredMethod("set" + field.getName(), String.class);
-				setMethod.invoke(this, resultSet_.getString(columnNameAnnotation.value()));
+				final Method setMethod = 
+						aClass.getDeclaredMethod(
+								"set" + field.getName(), String.class);
+				setMethod.invoke(
+						this
+						, resultSet_.getString(columnNameAnnotation.value()));
 			}
 			else if (field.getType() == Boolean.TYPE){
-				final Method setMethod = aClass.getDeclaredMethod("set" + field.getName(), Boolean.class);
-				setMethod.invoke(this, resultSet_.getBoolean(columnNameAnnotation.value()));
+				final Method setMethod = 
+						aClass.getDeclaredMethod(
+								"set" + field.getName(), Boolean.class);
+				setMethod.invoke(
+						this
+						, resultSet_.getBoolean(columnNameAnnotation.value()));
 			}
 		}
 	}
@@ -353,7 +406,10 @@ public abstract class Marshallable implements Message {
 			throws FrameworkException, Exception {
 		final JsonArray jarray = jo_.getJsonArray(field.getName());
 
-		final Object myArray = Array.newInstance(field.getType().getComponentType(), jarray.size());
+		final Object myArray = 
+				Array.newInstance(
+						field.getType().getComponentType()
+						, jarray.size());
 
 		final Class<?> fieldType = field.getType();
 		final String elementName = fieldType.getComponentType().getSimpleName();
@@ -375,7 +431,8 @@ public abstract class Marshallable implements Message {
 		if (jo_.containsKey(field.getName()) && !jo_.isNull(field.getName())) {
 			final JsonObject job = jo_.getJsonObject(field.getName());
 			@SuppressWarnings("unchecked")
-			final Class<? extends Message> fType =  (Class<? extends Message>) field.getType();
+			final Class<? extends Message> fType =  
+				(Class<? extends Message>) field.getType();
 			setField(field, Framework.getObjectFactory().fabricate(
 					fType
 					, msg -> { 

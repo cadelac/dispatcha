@@ -13,8 +13,8 @@ public class JsonEncoder {
 	public static String encode(final Message message_) throws EncodeException {
 
 		final String encodedString = encodeOnly(message_);
-		//logger.info(String.format(">>> encoded %s: [\n%s\n]", 
-		//		message_.getClass().getSimpleName(), encodedString));
+		logger.debug(String.format(">>> encoded %s: [\n%s\n]", 
+				message_.getClass().getSimpleName(), encodedString));
 		return encodedString;
 	}
 	
@@ -25,5 +25,5 @@ public class JsonEncoder {
 	}
 	
 	
-	//private static final Logger logger = Logger.getLogger(JsonEncoder.class);
+	private static final Logger logger = Logger.getLogger(JsonEncoder.class);
 }
