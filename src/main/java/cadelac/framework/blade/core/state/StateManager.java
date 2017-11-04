@@ -8,25 +8,24 @@ import org.apache.log4j.Logger;
 import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.exception.StateException;
-import cadelac.framework.blade.core.message.Message;
+import cadelac.framework.blade.core.message.Dispatchable;
+import cadelac.framework.blade.core.state.experimental.StateId;
 
 public class StateManager {
-	
-	static {
-		_states = new ConcurrentHashMap<String,State>();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <M extends Message, S extends State>
-	S acquireState(final StateAware<M,S> handler_, final M message_, final String stateId_) 
-			throws ArgumentException, InitializationException, StateException, Exception {
-		if (handler_==null)
-			throw new ArgumentException("handler must not be null");
-		if (stateId_ == null)
-			throw new ArgumentException("state id must not be null");
-		if (message_==null)
-			throw new ArgumentException("message must not be null");
 
+	@SuppressWarnings("unchecked")
+	public static <D extends Dispatchable, S extends State>
+	S acquireState(
+			final StateAware<D,S> handler_
+			, final D dispatchable_
+			, final String stateId_) 
+					throws ArgumentException
+					, InitializationException
+					, StateException
+					, Exception {
+		
+		verifyArguments(handler_, dispatchable_, stateId_);
+		
 		final S state = (S) _states.get(stateId_);
 		if (state != null) {
 			// found it, exit immediately
@@ -39,7 +38,7 @@ public class StateManager {
 		}
 		else {
 			// state does not exist, create a new state
-			final S createdState = (S) handler_.createState(message_);
+			final S createdState = (S) handler_.createState(dispatchable_);
 			
 			if (createdState == null)
 				// state is not allowed to be null.
@@ -48,31 +47,60 @@ public class StateManager {
 		}
 	}
 
+	/**/
 	@SuppressWarnings("unchecked")
 	public static <S extends State> 
-	S getState(final String stateId_) 
+	S getState(final StateId stateId_) 
 			throws ArgumentException, InitializationException {
 		if (stateId_ == null)
 			throw new ArgumentException("state id must not be null");
 		if (_states == null)
 			throw new InitializationException("State table is not initialized");
-		return (S) _states.get(stateId_);
+		return (S) _states.get(stateId_.getId());
+	}
+	
+
+	
+	public static
+	boolean isExists(final StateId stateId_) 
+			throws ArgumentException, InitializationException {
+		if (stateId_ == null)
+			throw new ArgumentException("state id must not be null");
+		if (_states == null)
+			throw new InitializationException("State table is not initialized");
+		return _states.containsKey(stateId_.getId());
 	}
 	
 	public static <S extends State>
 	S installState(final S state_) 
-			throws ArgumentException, InitializationException {
+			//throws ArgumentException, InitializationException 
+	{
+		/*
 		if (state_ == null)
 			throw new ArgumentException("state must not be null");
 		if (_states == null)
 			throw new InitializationException("State table is not initialized");
+			*/
 		_states.put(state_.getId(), state_);
 		logger.debug(String.format("installed state [%s]", state_.getId()));
 		return state_;
 	}
 
+	private static <D extends Dispatchable, S extends State>
+	void verifyArguments(
+			final StateAware<D,S> handler_
+			, final D dispatchable_
+			, final String stateId_) throws ArgumentException {
+		if (handler_==null)
+			throw new ArgumentException("handler must not be null");
+		if (stateId_ == null)
+			throw new ArgumentException("state id must not be null");
+		if (dispatchable_==null)
+			throw new ArgumentException("dispatchable must not be null");
+	}
+	
 	
 	private static final Logger logger = Logger.getLogger(StateManager.class);
 	
-	private static Map<String,State> _states;
+	private static final Map<String,State> _states = new ConcurrentHashMap<String,State>();
 }

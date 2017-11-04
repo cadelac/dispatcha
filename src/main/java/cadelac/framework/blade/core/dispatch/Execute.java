@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.invocation.Response;
-import cadelac.framework.blade.core.message.Message;
 import cadelac.framework.blade.core.state.State;
 
 public class Execute {
@@ -25,7 +24,7 @@ public class Execute {
 		EXECUTION_SERVICE.execute(command_);
 	}
 	
-	public static <R, M extends Message, S extends State> 
+	public static <R, S extends State> 
 	Future<Response<R>> executePull(
 			Callable<Response<R>> callable) 
 					throws Exception {

@@ -1,17 +1,17 @@
 package cadelac.framework.blade.core.dispatch;
 
 import cadelac.framework.blade.core.IdentifiedBase;
-import cadelac.framework.blade.core.message.Message;
+import cadelac.framework.blade.core.message.Dispatchable;
 import cadelac.framework.blade.core.state.State;
 
-public class PushBase<M extends Message,S extends State>
-	extends IdentifiedBase implements Push<M,S> {
+public class PushBase<D extends Dispatchable,S extends State>
+	extends IdentifiedBase implements Push<D,S> {
 
 	public PushBase(
 			final String id_
-			, final Routine<M,S> routine_
-			, final StateIdMapper<M> stateIdMapper_
-			, final StateCreator<M,S> stateCreator_) {
+			, final Routine<D,S> routine_
+			, final StateIdMapper<D> stateIdMapper_
+			, final StateCreator<D,S> stateCreator_) {
 		super(id_);
 		setRoutine(routine_);
 		_stateIdMapper = stateIdMapper_;
@@ -19,38 +19,38 @@ public class PushBase<M extends Message,S extends State>
 	}
 
 	@Override
-	public String getStateId(M message_) {
-		return getStateIdMapper().getStateId(message_);
+	public String getStateId(D dispatchable_) {
+		return getStateIdMapper().getStateId(dispatchable_);
 	}
 
 	@Override
-	public S createState(M message_) throws Exception {
-		return getStateCreator().createState(message_);
+	public S createState(D dispatchable_) throws Exception {
+		return getStateCreator().createState(dispatchable_);
 	}
 	
 	@Override
-	public Routine<M,S> getRoutine() {
+	public Routine<D,S> getRoutine() {
 		return _routine;
 	}
 	
 	@Override
-	public void setRoutine(final Routine<M,S> routine_) {
+	public void setRoutine(final Routine<D,S> routine_) {
 		_routine = routine_;
 	}
 	
 	@Override
-	public StateIdMapper<M> getStateIdMapper() {
+	public StateIdMapper<D> getStateIdMapper() {
 		return _stateIdMapper;
 	}
 
 
 	@Override
-	public StateCreator<M, S> getStateCreator() {
+	public StateCreator<D,S> getStateCreator() {
 		return _stateCreator;
 	}
 	
 	
-	private Routine<M,S> _routine;	
-	private final StateIdMapper<M> _stateIdMapper;
-	private final StateCreator<M,S> _stateCreator;
+	private Routine<D,S> _routine;	
+	private final StateIdMapper<D> _stateIdMapper;
+	private final StateCreator<D,S> _stateCreator;
 }

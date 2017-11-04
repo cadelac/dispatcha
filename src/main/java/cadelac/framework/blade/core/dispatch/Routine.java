@@ -1,9 +1,9 @@
 package cadelac.framework.blade.core.dispatch;
 
-import cadelac.framework.blade.core.message.Message;
+import cadelac.framework.blade.core.message.Dispatchable;
 import cadelac.framework.blade.core.state.State;
 
 @FunctionalInterface
-public interface Routine<M extends Message,S extends State> {
-	public void routine(M msg_, S state_) throws Exception;
+public interface Routine<D extends Dispatchable,S extends State> {
+	public void routine(D dispatchable_, S state_) throws Exception;
 }

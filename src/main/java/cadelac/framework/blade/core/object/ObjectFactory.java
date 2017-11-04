@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.SystemException;
-import cadelac.framework.blade.core.message.Message;
+import cadelac.framework.blade.core.message.Generated;
 
 public interface ObjectFactory {
 	/**
@@ -14,7 +14,7 @@ public interface ObjectFactory {
 	 * @throws Exception 
 	 * @throws FrameworkException 
 	 */
-	public <T extends Message> T fabricate(Class<T> type_) 
+	public <T extends Generated> T fabricate(Class<T> type_) 
 			throws FrameworkException, Exception;
 	
 	
@@ -25,9 +25,9 @@ public interface ObjectFactory {
 	 * @throws Exception 
 	 * @throws FrameworkException 
 	 */
-	public <T extends Message> T fabricate(Class<T> type_, ObjectPopulator<T> objectPopulator_) 
+	public <T extends Generated> T fabricate(Class<T> type_, ObjectPopulator<T> objectPopulator_) 
 			throws Exception;
 	
-	public Class<? extends Message> register(final Class<? extends Message> protoClass_) 
+	public Class<? extends Generated> register(final Class<? extends Generated> protoClass_) 
 			throws IOException, ClassNotFoundException, SystemException;
 }

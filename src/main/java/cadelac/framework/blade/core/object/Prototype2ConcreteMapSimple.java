@@ -14,25 +14,28 @@ import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.code.compiler.DynamicCompiler;
 import cadelac.framework.blade.core.code.generator.CodeGenerator;
 import cadelac.framework.blade.core.exception.SystemException;
+import cadelac.framework.blade.core.message.Generated;
 import cadelac.framework.blade.core.message.Message;
 
 public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 
 	public Prototype2ConcreteMapSimple() {
-		_map = new HashMap<Class<? extends Message>,Class<? extends Message>>();
-		_reverseMap = new HashMap<Class<? extends Message>,Class<? extends Message>>();
+		_map = new HashMap<Class<? extends Generated>,Class<? extends Generated>>();
+		_reverseMap = new HashMap<Class<? extends Generated>,Class<? extends Generated>>();
 	}
 	
 
 	@Override
-	public Class<? extends Message> prototypeClassOf(Class<? extends Message> concreteClass_) {
+	public Class<? extends Generated> prototypeClassOf(
+			Class<? extends Generated> concreteClass_) {
 		return _reverseMap.get(concreteClass_);
 	}
 	
 	@Override
-	public Class<? extends Message> get(final Class<? extends Message> prototypeClass_) 
-			throws ClassNotFoundException, IOException, SystemException {
-		final Class<? extends Message> lookedupClass = _map.get(prototypeClass_);
+	public Class<? extends Generated> get(
+			final Class<? extends Generated> prototypeClass_) 
+					throws ClassNotFoundException, IOException, SystemException {
+		final Class<? extends Generated> lookedupClass = _map.get(prototypeClass_);
 		if (lookedupClass != null) {
 			return lookedupClass;
 		}
@@ -42,14 +45,17 @@ public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 	}
 
 	@Override
-	public void put(final Class<? extends Message> prototypeClass_, final Class<? extends Message> concreteClass_) {
+	public void put(
+			final Class<? extends Generated> prototypeClass_
+			, final Class<? extends Generated> concreteClass_) {
 		_map.put(prototypeClass_, concreteClass_);
 		_reverseMap.put(concreteClass_, prototypeClass_);
 	}
 
 	@Override
-	public Class<? extends Message> register(final Class<? extends Message> protoClass_) 
-			throws IOException, ClassNotFoundException, SystemException {
+	public Class<? extends Generated> register(
+			final Class<? extends Generated> protoClass_) 
+					throws IOException, ClassNotFoundException, SystemException {
 		
 		final Package pkg = protoClass_.getPackage();
 		final String packageName = pkg.getName();
@@ -80,8 +86,9 @@ public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 		}
 
 		logger.debug("loaded concrete class " + packageName + "." + concreteClassName + " for prototype " + protoClass_.getSimpleName());
+		
 		/* install loaded class into map */
-		Framework.getPrototype2ConcreteMap().put(protoClass_, loadedClass);
+		this.put(protoClass_, loadedClass);
 
 		return loadedClass;
 	}
@@ -89,6 +96,6 @@ public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 	
 	private static final Logger logger = Logger.getLogger(Prototype2ConcreteMapSimple.class);
 	
-	private final Map<Class<? extends Message>,Class<? extends Message>> _map;
-	private final Map<Class<? extends Message>,Class<? extends Message>> _reverseMap;
+	private final Map<Class<? extends Generated>,Class<? extends Generated>> _map;
+	private final Map<Class<? extends Generated>,Class<? extends Generated>> _reverseMap;
 }

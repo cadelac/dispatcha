@@ -15,53 +15,78 @@ import cadelac.framework.blade.core.exception.RouteException;
 import cadelac.framework.blade.core.exception.SystemException;
 import cadelac.framework.blade.core.invocation.Response;
 import cadelac.framework.blade.core.invocation.ResponseBase;
+import cadelac.framework.blade.core.message.Dispatchable;
+import cadelac.framework.blade.core.message.Generated;
 import cadelac.framework.blade.core.message.Message;
 import cadelac.framework.blade.core.state.State;
 import cadelac.framework.blade.core.state.StateAware;
 import cadelac.framework.blade.core.state.StateLess;
 import cadelac.framework.blade.core.state.StateManager;
+import cadelac.framework.blade.core.state.experimental.StateBlock;
 
 
 public class Dispatch {
 
+	
+	
+	/*
+	 * call below determines the mapping from prototype to concrete class
+	 */
+	@SuppressWarnings("unchecked")
+	public static <G extends Generated> 
+	Class<G> getConcreteClassOf(final Class<G> protoType_) throws Exception {
+		return (Class<G>) Framework.getPrototype2ConcreteMap().get(protoType_);
+	}
+	
+	
 	/*
 	 * BIND CALLS
 	 */
 	
 	// bind message to push
+
 	public static <M extends Message, S extends State> 
 	void bind(final Class<M> protoType_, Push<M,S> proposedPush_) 
 			throws Exception {
-		// convert prototype class to implementation class because
-		// internal mapping is from implementation class to StateAware...
-		@SuppressWarnings("unchecked")
-		final Class<M> implementation = 
-			(Class<M>) Framework.getPrototype2ConcreteMap().get(protoType_);
-		msgPush._internal.checkedPut(implementation, proposedPush_);
-	}
+		final Class<M> implementation = getConcreteClassOf(protoType_);
+		bindPushDispatchable(implementation, proposedPush_);
+	}		
 	
+	public static <D extends Dispatchable, S extends State> 
+	void bindPushDispatchable(final Class<D> implementation_, Push<D,S> proposedPush_) 
+			throws Exception {
+		msgPush._internal.checkedPut(implementation_, proposedPush_);
+	}
+
 	// bind hashId to push
-	public static <M extends Message, S extends State>
-	void bind(final String hashId_, Push<M,S> proposedPush_)
+	public static <D extends Dispatchable, S extends State>
+	void bind(final String hashId_, Push<D,S> proposedPush_)
 			throws Exception {
 		hashPush._internal.checkedPut(hashId_, proposedPush_);
 	}
 	
+	
+	
+	
 	// bind message to pull
+	
+	
 	public static <R, M extends Message, S extends State>
 	void bind(final Class<M> protoType_, Pull<R,M,S> proposedPull_)
 			throws Exception {
-		// convert prototype class to implementation class because
-		// internal mapping is from implementation class to StateAware...
-		@SuppressWarnings("unchecked")
-		final Class<M> implementation = 
-			(Class<M>) Framework.getPrototype2ConcreteMap().get(protoType_);
-		msgPull._internal.checkedPut(implementation, proposedPull_);
+		final Class<M> implementation = getConcreteClassOf(protoType_);
+		bindPullDispatchable(implementation, proposedPull_);
+	}
+	
+	public static <R, D extends Dispatchable, S extends State> 
+	void bindPullDispatchable(final Class<D> implementation_, Pull<R,D,S> proposedPull_) 
+			throws Exception {
+		msgPull._internal.checkedPut(implementation_, proposedPull_);
 	}
 	
 	// bind hashId to pull
-	public static <R, M extends Message, S extends State>
-	void bind(final String hashId_, Pull<R,M,S> proposedPull_) 
+	public static <R, D extends Dispatchable, S extends State>
+	void bind(final String hashId_, Pull<R,D,S> proposedPull_) 
 			throws Exception {
 		hashPull._internal.checkedPut(hashId_, proposedPull_);
 	}
@@ -74,61 +99,61 @@ public class Dispatch {
 
 	// dispatch push using message
 	
-	public static <M extends Message, S extends State> 
-	void push(final M implementation_) 
+	public static <D extends Dispatchable, S extends State> 
+	void push(final D implementation_) 
 			throws Exception {
 		@SuppressWarnings("unchecked")
-		final StateAware<M,S> stateAware = 
-			(StateAware<M, S>) msgPush._internal.get(
+		final StateAware<D,S> stateAware = 
+			(StateAware<D,S>) msgPush._internal.get(
 					implementation_.getClass());
 		immediatePush(stateAware, implementation_);	
 	}
 	
-	public static <M extends Message, S extends State> 
-	void push(final M implementation_, final long delay_) 
+	public static <D extends Dispatchable, S extends State> 
+	void push(final D implementation_, final long delay_) 
 			throws Exception {
 
 		@SuppressWarnings("unchecked")
-		final StateAware<M,S> stateAware = 
-			(StateAware<M, S>) msgPush._internal.get(
+		final StateAware<D,S> stateAware = 
+			(StateAware<D,S>) msgPush._internal.get(
 					implementation_.getClass());
 		delayedPush(stateAware, implementation_, delay_);	
 	}
 	
-	public static <M extends Message, S extends State> 
-	void push(final M implementation_, final long delay_, final long period_)
+	public static <D extends Dispatchable, S extends State> 
+	void push(final D implementation_, final long delay_, final long period_)
 			throws Exception {
 		@SuppressWarnings("unchecked")
-		final StateAware<M,S> stateAware = 
-			(StateAware<M, S>) msgPush._internal.get(
+		final StateAware<D,S> stateAware = 
+			(StateAware<D,S>) msgPush._internal.get(
 					implementation_.getClass());		
 		repeatedPush(stateAware, implementation_, delay_, period_);
 	}	
 	
 	// dispatch push using hash id
 	
-	public static <M extends Message, S extends State> 
-	void push(final String hashId_, final M implementation_) 
+	public static <D extends Dispatchable, S extends State> 
+	void push(final String hashId_, final D implementation_) 
 			throws Exception {
-		final StateAware<M,S> stateAware = hashPush._internal.get(hashId_);
+		final StateAware<D,S> stateAware = hashPush._internal.get(hashId_);
 		immediatePush(stateAware, implementation_);	
 	}
 
-	public static <M extends Message, S extends State> 
-	void push(final String hashId_, final M implementation_, final long delay_)
+	public static <D extends Dispatchable, S extends State> 
+	void push(final String hashId_, final D implementation_, final long delay_)
 			throws Exception {
-		final StateAware<M,S> stateAware = hashPush._internal.get(hashId_);
+		final StateAware<D,S> stateAware = hashPush._internal.get(hashId_);
 		delayedPush(stateAware, implementation_, delay_);	
 	}
 	
-	public static <M extends Message, S extends State> 
+	public static <D extends Dispatchable, S extends State> 
 	void push(
 			final String hashId_
-			, final M implementation_
+			, final D implementation_
 			, final long delay_
 			, final long period_) 
 					throws Exception {
-		final StateAware<M,S> stateAware = hashPush._internal.get(hashId_);
+		final StateAware<D,S> stateAware = hashPush._internal.get(hashId_);
 		repeatedPush(stateAware, implementation_, delay_, period_);
 	}	
 
@@ -140,29 +165,29 @@ public class Dispatch {
 	
 	// dispatch pull using message
 	
-	public static <R, M extends Message, S extends State> 
-	Future<Response<R>> pull(final M implementation_)
+	public static <R, D extends Dispatchable, S extends State> 
+	Future<Response<R>> pull(final D implementation_)
 			throws Exception {
-		final Class<? extends Message> mc = implementation_.getClass();
+		final Class<? extends Dispatchable> mc = implementation_.getClass();
 		@SuppressWarnings("unchecked")
-		final StateAware<M,S> stateAware = 
-			(StateAware<M, S>) msgPull._internal.get(mc);
+		final StateAware<D,S> stateAware = 
+			(StateAware<D,S>) msgPull._internal.get(mc);
 		return pull(stateAware, implementation_);
 	}
 	
 	// dispatch pull using hash id
 	
-	public static <R, M extends Message, S extends State> 
-	Future<Response<R>> pull(final String hashId_, final M implementation_)
+	public static <R, D extends Dispatchable, S extends State> 
+	Future<Response<R>> pull(final String hashId_, final D implementation_)
 			throws Exception {
-		final StateAware<M,S> stateAware = hashPull._internal.get(hashId_);
+		final StateAware<D,S> stateAware = hashPull._internal.get(hashId_);
 		return pull(stateAware, implementation_);
 	}
 	
-	public static <M extends Message> 
-	M extractResponse(final Future<Response<M>> future) 
+	public static <D extends Dispatchable> 
+	D extractResponse(final Future<Response<D>> future) 
 			throws SystemException, InterruptedException, ExecutionException {
-		final Response<M> futureResponse = future.get();
+		final Response<D> futureResponse = future.get();
 		if (futureResponse.getException() != null) {
 			final String diagnostic = "exception encountered on reaping future...";
 			logger.warn(diagnostic);
@@ -173,12 +198,12 @@ public class Dispatch {
 	}
 	
 
-	public static <M extends Message> 
-	M extractResponse(
-			final Future<Response<M>> future
+	public static <D extends Dispatchable> 
+	D extractResponse(
+			final Future<Response<D>> future
 			, final String operation) 
 					throws SystemException, InterruptedException, ExecutionException {
-		final Response<M> futureResponse = future.get();
+		final Response<D> futureResponse = future.get();
 		if (futureResponse.getException() != null) {
 			final String diagnostic = 
 					String.format("exception encountered on operation: %s", operation);
@@ -192,18 +217,18 @@ public class Dispatch {
 	
 	
 	// activation record
-	static class CallFrame<M extends Message, S extends State> {
-		public StateAware<M,S> stateAware;
+	static class CallFrame<D extends Dispatchable, S extends State> {
+		public StateAware<D,S> stateAware;
 		public String stateId;
 		public S state;
 		public long jobId;
 	}
 	
-	static <M extends Message, S extends State> 
-	CallFrame<M,S> populateCallFrame(
-			final CallFrame<M,S> callFrame_
-			, StateAware<M,S> stateAware_
-			, final M msg_)
+	static <D extends Dispatchable, S extends State> 
+	CallFrame<D,S> populateCallFrame(
+			final CallFrame<D,S> callFrame_
+			, StateAware<D,S> stateAware_
+			, final D msg_)
 					throws Exception {
 		if (msg_ == null) {
 			final String diag = String.format("message is null: invalid argument");
@@ -230,11 +255,11 @@ public class Dispatch {
 	}
 	
 	// Push by routing using class of Message
-	private static class MsgPush extends PushDispatch<Class<? extends Message>> {
+	private static class MsgPush extends PushDispatch<Class<? extends Dispatchable>> {
 	}
 	
 	// Pull by routing using class of Message
-	private static class MsgPull extends PullDispatch<Class<? extends Message>> {
+	private static class MsgPull extends PullDispatch<Class<? extends Dispatchable>> {
 	}
 
 	// Push by routing using Hash of Handler
@@ -253,10 +278,10 @@ public class Dispatch {
 			_internal = new InternalLookupBase<K>();
 		}
 		
-		public <M extends Message, S extends State>
-		void runnableBody(final CallFrame<M,S> callFrame, final M msg_) {
+		public <D extends Dispatchable, S extends State>
+		void runnableBody(final CallFrame<D,S> callFrame, final D msg_) {
 			
-			final Push<M,S> push = (Push<M,S>) callFrame.stateAware;
+			final Push<D,S> push = (Push<D,S>) callFrame.stateAware;
 			try {
 				if (callFrame.state == StateLess.STATELESS_STATE) {
 					doRoutine(push, callFrame, msg_);
@@ -277,8 +302,8 @@ public class Dispatch {
 			}			
 		}
 		
-		private static <M extends Message,S extends State> 
-		void doRoutine(Push<M,S> push, final CallFrame<M,S> callFrame, final M msg_) 
+		private static <D extends Dispatchable,S extends State> 
+		void doRoutine(Push<D,S> push, final CallFrame<D,S> callFrame, final D msg_) 
 				throws Exception {
 			logger.debug(String.format(
 					"processing push request msg [%s] for handler [%s] with job [%d] on state [%s]"
@@ -291,6 +316,8 @@ public class Dispatch {
 					, callFrame.state);
 		}
 
+		
+		
 		// access is 'package'
 		InternalLookupBase<K> _internal;
 	}
@@ -302,10 +329,10 @@ public class Dispatch {
 			_internal = new InternalLookupBase<K>();
 		}
 		
-		public static <R,M extends Message,S extends State> 
-		Response<R> callableBody(final CallFrame<M,S> callFrame, final M msg_) {
+		public static <R,D extends Dispatchable,S extends State> 
+		Response<R> callableBody(final CallFrame<D,S> callFrame, final D msg_) {
 			@SuppressWarnings("unchecked")
-			final Pull<R,M,S> pull = (Pull<R, M, S>) callFrame.stateAware;
+			final Pull<R,D,S> pull = (Pull<R,D,S>) callFrame.stateAware;
 			try {
 				if (callFrame.state == StateLess.STATELESS_STATE) {
 					return doCalculation(pull, callFrame, msg_);
@@ -327,8 +354,8 @@ public class Dispatch {
 			}			
 		}
 		
-		private static <R,M extends Message,S extends State> 
-		Response<R> doCalculation(Pull<R,M,S> pull, final CallFrame<M,S> callFrame, final M msg_) 
+		private static <R,D extends Dispatchable,S extends State> 
+		Response<R> doCalculation(Pull<R,D,S> pull, final CallFrame<D,S> callFrame, final D msg_) 
 				throws Exception {
 			logger.info(String.format(
 					"processing pull request msg [%s] for handler [%s] with job [%d] on state [%s]"
@@ -349,11 +376,13 @@ public class Dispatch {
 
 	// Used to encapsulate internal lookup logic
 	private static interface InternalLookup<K> {
-		<M extends Message,S extends State> 
-		void checkedPut(final K key_, final StateAware<M,S> proposedStateAware_)
+		
+		<D extends Dispatchable,S extends State> 
+		void checkedPut(final K key_, final StateAware<D,S> proposedStateAware_)
 				throws Exception;
-		<M extends Message,S extends State> 
-		StateAware<M,S> get(final K key_);
+		
+		<D extends Dispatchable,S extends State> 
+		StateAware<D,S> get(final K key_);
 	}
 	
 	private static class InternalLookupBase<K> implements InternalLookup<K> {
@@ -361,17 +390,17 @@ public class Dispatch {
 		public InternalLookupBase() { 
 			_provider = new HashMap<
 					K,
-					StateAware<? extends Message,? extends State>>(); 
+					StateAware<? extends Dispatchable,? extends State>>(); 
 		}
 		
 		@Override
-		public <M extends Message,S extends State> 
-		void checkedPut(final K key_, final StateAware<M,S> proposedStateAware_) 
+		public <D extends Dispatchable,S extends State> 
+		void checkedPut(final K key_, final StateAware<D,S> proposedStateAware_) 
 				throws Exception {
 
 			@SuppressWarnings("unchecked")
-			final StateAware<M,S> entrenchedStateAware = 
-				(StateAware<M,S>) _provider.get(key_);
+			final StateAware<D,S> entrenchedStateAware = 
+				(StateAware<D,S>) _provider.get(key_);
 			
 			if (entrenchedStateAware != null) {
 				final String diag = "Message bind failure: already bound";
@@ -382,36 +411,37 @@ public class Dispatch {
 		}
 		
 		@Override
-		public <M extends Message,S extends State>
-		StateAware<M,S> get(final K key_) {
+		public <D extends Dispatchable,S extends State>
+		StateAware<D,S> get(final K key_) {
 			@SuppressWarnings("unchecked")
-			final StateAware<M,S> stateAware = 
-				(StateAware<M,S>) _provider.get(key_);
+			final StateAware<D,S> stateAware = 
+				(StateAware<D,S>) _provider.get(key_);
 			return stateAware;
 		}
 		
-		private final Map<K,StateAware<? extends Message,? extends State>> _provider;
+		private final Map<K,StateAware<? extends Dispatchable,? extends State>> _provider;
 	}
 	
 	// to expose private method push() below...
-	public static <M extends Message, S extends State>
+	public static <D extends Dispatchable, S extends State>
 	void inlinePush(
-			final StateAware<M,S> stateAware_
-			, final M implementation_) 
+			final StateAware<D,S> stateAware_
+			, final D implementation_) 
 			throws Exception {
 		immediatePush(stateAware_, implementation_);
 	}
 
+	
 	// using StateAware
-	private static <M extends Message, S extends State> 
+	private static <D extends Dispatchable, S extends State> 
 	void immediatePush(
-			final StateAware<M,S> stateAware_
-			, final M implementation_) 
+			final StateAware<D,S> stateAware_
+			, final D implementation_) 
 					throws Exception {
 
-		final CallFrame<M,S> callFrame = 
+		final CallFrame<D,S> callFrame = 
 				populateCallFrame(
-						new Dispatch.CallFrame<M,S>()
+						new Dispatch.CallFrame<D,S>()
 						, stateAware_
 						, implementation_);
 	
@@ -420,16 +450,68 @@ public class Dispatch {
 		});		
 	}
 	
-	private static <M extends Message, S extends State> 
+	
+	public static <S extends State>
+	void pushInline(
+			final S state_
+			, final StateBlock<S> stateBlock_) throws Exception {
+		Execute.immediateExecution(() ->{
+			Dispatch.runnableStateBlock(state_, stateBlock_);
+		});
+	}
+	public static <S extends State>
+	void pushInline(
+			final long delay_
+			, final S state_
+			, final StateBlock<S> stateBlock_) throws Exception {
+		Execute.delayedExecution(
+				() ->{
+					Dispatch.runnableStateBlock(state_, stateBlock_);
+				}
+				, delay_);
+	}	
+	
+	public static <S extends State>
+	void runnableStateBlock(
+			final S state_
+			, final StateBlock<S> stateBlock_)  {
+		try {
+			if (state_ == StateLess.STATELESS_STATE) {
+				doInlineStateBlock(state_, stateBlock_);
+			}
+			else { // synchronization required
+				synchronized (state_) {
+					doInlineStateBlock(state_, stateBlock_);
+				}
+			}
+		} catch (Exception e_) {
+			logger.warn(String.format(
+					"exception on inline push on state [%s]"
+					, state_.getId()));
+			logger.warn(FrameworkException.getStringStackTrace(e_));
+		}	
+	}
+	
+	private static <S extends State> 
+	void doInlineStateBlock(final S state_, final StateBlock<S> stateBlock_) 
+			throws Exception {
+		logger.debug(String.format(
+				"processing inline on state [%s]"
+				, state_.getId()));
+		stateBlock_.block(state_);
+	}
+	
+	
+	private static <D extends Dispatchable, S extends State> 
 	void delayedPush(
-			final StateAware<M,S> stateAware
-			, final M implementation_
+			final StateAware<D,S> stateAware
+			, final D implementation_
 			, final long delay_) 
 					throws Exception {
 		
-		final CallFrame<M,S> callFrame = 
+		final CallFrame<D,S> callFrame = 
 				populateCallFrame(
-						new CallFrame<M,S>()
+						new CallFrame<D,S>()
 						, stateAware
 						, implementation_);
 		Execute.delayedExecution(
@@ -437,17 +519,17 @@ public class Dispatch {
 				, delay_);
 	}
 	
-	private static <M extends Message, S extends State> 
+	private static <D extends Dispatchable, S extends State> 
 	void repeatedPush(
-			final StateAware<M,S> stateAware
-			, final M implementation_
+			final StateAware<D,S> stateAware
+			, final D implementation_
 			, final long delay_
 			, final long period_) 
 					throws Exception {
 		
-		final CallFrame<M,S> callFrame = 
+		final CallFrame<D,S> callFrame = 
 				populateCallFrame(
-						new CallFrame<M,S>()
+						new CallFrame<D,S>()
 						, stateAware
 						, implementation_);
 		Execute.repeatedExecution(
@@ -457,23 +539,23 @@ public class Dispatch {
 	}
 	
 	// to expose private method pull() below...
-	public static <R, M extends Message, S extends State> 
+	public static <R, D extends Dispatchable, S extends State> 
 	Future<Response<R>> inlinePull(
-			final StateAware<M,S> stateAware_
-			, final M implementation_) 
+			final StateAware<D,S> stateAware_
+			, final D implementation_) 
 			throws Exception {
 		return pull(stateAware_, implementation_);
 	}
 	
 	// dispatch pull
-	private static <R, M extends Message, S extends State> 
+	private static <R, D extends Dispatchable, S extends State> 
 	Future<Response<R>> pull(
-			final StateAware<M,S> stateAware_
-			, final M implementation_) 
+			final StateAware<D,S> stateAware_
+			, final D implementation_) 
 					throws Exception {
-		final CallFrame<M,S> callFrame = 
+		final CallFrame<D,S> callFrame = 
 				populateCallFrame(
-						new CallFrame<M,S>()
+						new CallFrame<D,S>()
 						, stateAware_
 						, implementation_);
 		return Execute.executePull(
@@ -515,7 +597,7 @@ public class Dispatch {
 
 
 //remove reference to EnvelopeMsg...
-//	public static <R extends Message> R remotePull(
+//	public static <R extends Dispatchable> R remotePull(
 //			final HandlerDescriptorMsg handlerDescriptorMsg_
 //			, final EnvelopeMsg envelopeMsg_) 
 //					throws NoSuchAlgorithmException, Exception {
