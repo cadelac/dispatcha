@@ -15,7 +15,7 @@ public class StateId extends IdentifiedBase {
 	}
 	
 	public <S extends State>
-	InvocationCapture<S> ifNew(final CanCreateState<S> canCreateState_) 
+	InvocationCapture<S> getState(final CanCreateState<S> canCreateState_) 
 			throws Exception {
 		final S state = StateManager.getState(this);
 		if ( state != null)
