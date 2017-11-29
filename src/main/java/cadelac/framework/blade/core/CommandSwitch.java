@@ -17,33 +17,37 @@ public class CommandSwitch {
 	public static final int SEPARATOR_LENGTH = SEPARATOR.length();
 	
 	public CommandSwitch() {
-		_arguments = new HashMap<String,String>();
+		_map = new HashMap<String,String>();
 	}
 	
 
 	public String getArgument(final String argumentName_) {
 		if (argumentName_ == null)
 			return null;
-		return _arguments.get(argumentName_);
+		return _map.get(argumentName_);
 	}
 
 
 	public void setArgument(final String argumentName_, final String argumentValue_) {
 		if (argumentName_ != null)
-			_arguments.put(argumentName_, argumentValue_);
+			_map.put(argumentName_, argumentValue_);
 	}
 
+	public String[] getArguments() {
+		return _arguments;
+	}
 
 	public void populate(final String[] arguments_) throws ArgumentException {
 		if (arguments_ == null)
 			throw new ArgumentException("cannot populate argument: argument is (invalid) null");
 		
+		_arguments = arguments_;
 		for (String arg : arguments_) {
 			int index = 0;
 			if (arg.startsWith(PREFIX) && (index = arg.indexOf(SEPARATOR)) >= 0) {
 				final String key = arg.substring(PREFIX_LENGTH, index);
 				final String value = arg.substring(index+SEPARATOR_LENGTH);
-				_arguments.put(key, value);
+				_map.put(key, value);
 				logger.debug(String.format("added command-line argument: key [%s], value [%s]", key, value));
 			}
 		}			
@@ -51,5 +55,6 @@ public class CommandSwitch {
 
 	private static final Logger logger = Logger.getLogger(CommandSwitch.class);
 	
-	private final Map<String,String> _arguments;
+	private String[] _arguments;
+	private final Map<String,String> _map;
 }
