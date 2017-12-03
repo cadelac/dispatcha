@@ -13,7 +13,7 @@ public class JsonEncoder {
 	public static String encode(final Message message_) throws EncodeException {
 
 		final String encodedString = encodeOnly(message_);
-		logger.debug(String.format(">>> encoded %s: [\n%s\n]", 
+		logger.info(String.format(">>> encoded %s: [\n%s\n]", 
 				message_.getClass().getSimpleName(), encodedString));
 		return encodedString;
 	}

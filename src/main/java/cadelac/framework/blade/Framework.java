@@ -128,9 +128,9 @@ public class Framework {
 	
 	
 	// CONSTANT VALUES
-	public static final String LOGICAL_TRUE = "true";
-	public static final String LOGICAL_FALSE = "false";
-	
+	public static final String LOGICAL_TRUE		= "true";
+	public static final String LOGICAL_FALSE		= "false";
+	public static final String EXCEPTION			= "exception";
 	
 	
 	private static ApplicationSimple _application;

@@ -65,6 +65,9 @@ public abstract class MarshallBase implements Marshallable {
 						if (fieldType.getComponentType() == String.class) {
 							marshallStringArray(field, jbuilder);
 						}
+						else if (fieldType.getComponentType() == Integer.class) {
+							marshallIntegerArray(field, jbuilder);
+						}
 						else { // assume it is an array of some arbitrary kind of object
 							marshallObjectArray(field, jbuilder);
 						}
@@ -220,6 +223,9 @@ public abstract class MarshallBase implements Marshallable {
 							if (fieldType.getComponentType() == String.class) {
 								unmarshallStringArray(field, jo_);
 							}
+							else if (fieldType.getComponentType() == Integer.class) {
+								unmarshallIntegerArray(field, jo_);
+							}
 							else { // assume it is an array of some arbitrary kind of object
 								unmarshallObjectArray(field, jo_);
 							}
@@ -347,6 +353,18 @@ public abstract class MarshallBase implements Marshallable {
 		  }		
 	}
 	
+	private void marshallIntegerArray(final Field field, final JsonObjectBuilder jbuilder) 
+			throws IllegalArgumentException, IllegalAccessException {
+		  final Integer[] series = (Integer[]) getField(field);
+		  if (series != null) {
+			  final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+			  for (Integer s : series)
+				  arrayBuilder.add(Json.createObjectBuilder().add(INTEGER_ARRAY_ELEMENT, s));
+			  jbuilder.add(field.getName(), arrayBuilder);
+		  }		
+	}
+	
+	
 	private void marshallObjectArray(Field field, final JsonObjectBuilder jbuilder) 
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		  final Object[] objects = (Object[]) getField(field);
@@ -401,6 +419,17 @@ public abstract class MarshallBase implements Marshallable {
 		setField(field, strings);	
 	}
 	
+	private void unmarshallIntegerArray(final Field field, final JsonObject jo_) 
+			throws JsonMessageException, IllegalAccessException {
+		final JsonArray jarray = jo_.getJsonArray(field.getName());
+		final Integer[] series = new Integer[jarray.size()];
+		for (int i=0; i<jarray.size(); ++i) {
+			JsonObject job = jarray.getJsonObject(i);
+			series[i] = job.getInt(INTEGER_ARRAY_ELEMENT); //.getString(INTEGER_ARRAY_ELEMENT);
+		}
+		setField(field, series);	
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void unmarshallObjectArray(final Field field, final JsonObject jo_) 
 			throws FrameworkException, Exception {
@@ -442,8 +471,8 @@ public abstract class MarshallBase implements Marshallable {
 		}		
 	}
 	
-	
-	private static final String STRING_ARRAY_ELEMENT = "StrArrayElem";
+	private static final String INTEGER_ARRAY_ELEMENT = "e";
+	private static final String STRING_ARRAY_ELEMENT = "e";
 	
 	private static final Logger logger = Logger.getLogger(MarshallBase.class);
 }
