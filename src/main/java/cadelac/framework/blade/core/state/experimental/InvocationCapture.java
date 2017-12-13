@@ -9,12 +9,23 @@ public class InvocationCapture<S extends State> {
 		_state = state_;
 	}
 
-	public void push(StateBlock<S> stateBlock_) throws Exception {
+	public void push(StateBlock<S> stateBlock_) 
+			throws Exception {
 		Dispatch.pushInline(_state, stateBlock_);
 	}
 	
-	public void push(long delay_, StateBlock<S> stateBlock_) throws Exception {
+	public void push(
+			long delay_
+			, StateBlock<S> stateBlock_) 
+					throws Exception {
 		Dispatch.pushInline(delay_, _state, stateBlock_);
+	}
+	
+	public void push(
+			final long period_
+			, final long delay_
+			, StateBlock<S> stateBlock_) throws Exception {
+		Dispatch.pushInline(period_, delay_, _state, stateBlock_);
 	}
 	
 	S _state;

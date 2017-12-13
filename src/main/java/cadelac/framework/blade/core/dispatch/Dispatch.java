@@ -445,9 +445,8 @@ public class Dispatch {
 						, stateAware_
 						, implementation_);
 	
-		Execute.immediateExecution(() -> {
-			msgPush.runnableBody(callFrame, implementation_);
-		});		
+		Execute.immediateExecution(
+				() -> msgPush.runnableBody(callFrame, implementation_));		
 	}
 	
 	
@@ -455,21 +454,33 @@ public class Dispatch {
 	void pushInline(
 			final S state_
 			, final StateBlock<S> stateBlock_) throws Exception {
-		Execute.immediateExecution(() ->{
-			Dispatch.runnableStateBlock(state_, stateBlock_);
-		});
+		Execute.immediateExecution(
+				() -> Dispatch.runnableStateBlock(state_, stateBlock_));
 	}
+	
 	public static <S extends State>
 	void pushInline(
 			final long delay_
 			, final S state_
 			, final StateBlock<S> stateBlock_) throws Exception {
 		Execute.delayedExecution(
-				() ->{
-					Dispatch.runnableStateBlock(state_, stateBlock_);
-				}
+				() -> Dispatch.runnableStateBlock(state_, stateBlock_)
 				, delay_);
-	}	
+	}
+	
+	public static <S extends State>
+	void pushInline(
+			final long period_
+			, final long delay_
+			, final S state_
+			, final StateBlock<S> stateBlock_) throws Exception {
+		Execute.repeatedExecution(
+				() -> Dispatch.runnableStateBlock(state_, stateBlock_)
+				, delay_
+				, period_);
+		
+
+	}
 	
 	public static <S extends State>
 	void runnableStateBlock(
