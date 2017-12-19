@@ -12,8 +12,8 @@ import cadelac.framework.blade.core.dispatch.StateIdMapper;
 import cadelac.framework.blade.core.state.State;
 import cadelac.framework.blade.core.state.StateAware;
 import cadelac.framework.blade.core.state.StateLess;
-import cadelac.framework.blade.core.state.experimental.CanChooseStateId;
-import cadelac.framework.blade.core.state.experimental.StateId;
+import cadelac.framework.blade.v2.core.dispatch.CanChooseStateId;
+import cadelac.framework.blade.v2.core.dispatch.StateId;
 
 /**
  * Indicates that it can be dispatched.

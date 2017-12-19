@@ -52,8 +52,7 @@ public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 		_reverseMap.put(concreteClass_, prototypeClass_);
 	}
 
-	@Override
-	public Class<? extends Generated> register(
+	private Class<? extends Generated> register(
 			final Class<? extends Generated> protoClass_) 
 					throws IOException, ClassNotFoundException, SystemException {
 		

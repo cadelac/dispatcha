@@ -22,7 +22,7 @@ import cadelac.framework.blade.core.state.State;
 import cadelac.framework.blade.core.state.StateAware;
 import cadelac.framework.blade.core.state.StateLess;
 import cadelac.framework.blade.core.state.StateManager;
-import cadelac.framework.blade.core.state.experimental.StateBlock;
+import cadelac.framework.blade.v2.core.dispatch.StateBlock;
 
 
 public class Dispatch {

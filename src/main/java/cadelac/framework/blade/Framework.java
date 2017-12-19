@@ -1,13 +1,9 @@
 package cadelac.framework.blade;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import cadelac.framework.blade.app.ApplicationSimple;
-import cadelac.framework.blade.comm.rpc.RpcTicket;
 import cadelac.framework.blade.core.CommandSwitch;
 import cadelac.framework.blade.core.PropertiesManager;
 import cadelac.framework.blade.core.code.compiler.DynamicCompiler;
-import cadelac.framework.blade.core.message.Message;
 import cadelac.framework.blade.core.monitor.Monitor;
 import cadelac.framework.blade.core.object.ObjectFactory;
 import cadelac.framework.blade.core.object.Prototype2ConcreteMap;
@@ -111,13 +107,6 @@ public class Framework {
 		_application = application_;
 	}
 
-	public static ConcurrentHashMap<Long,RpcTicket<? extends Message>> getRpcTable() {
-		return RPC_TABLE;
-	}
-	public static void setRpcTable(ConcurrentHashMap<Long,RpcTicket<? extends Message>> rpcTable_) {
-		RPC_TABLE = rpcTable_;
-	}
-	
 	public static boolean getMessageDigestIsEnabled() {
 		return _messageDigestIsEnabled;
 	}
@@ -146,8 +135,4 @@ public class Framework {
 	private static int _threadpool_size;
 	private static int _scheduled_threadpool_size; /* for delayed calls */
 	private static boolean _messageDigestIsEnabled;
-
-	private static ConcurrentHashMap<Long,RpcTicket<? extends Message>> RPC_TABLE;
-
-	
 }

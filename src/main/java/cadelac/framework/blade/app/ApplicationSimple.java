@@ -2,14 +2,12 @@ package cadelac.framework.blade.app;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import cadelac.framework.blade.Framework;
-import cadelac.framework.blade.comm.rpc.RpcTicket;
 import cadelac.framework.blade.core.BootMsg;
 import cadelac.framework.blade.core.CommandSwitch;
 import cadelac.framework.blade.core.Identified;
@@ -25,9 +23,8 @@ import cadelac.framework.blade.core.dispatch.PushBase;
 import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
-import cadelac.framework.blade.core.message.Message;
-import cadelac.framework.blade.core.monitor.MonitorSimple;
-import cadelac.framework.blade.core.object.ObjectFactorySimple;
+import cadelac.framework.blade.core.monitor.Monitor;
+import cadelac.framework.blade.core.object.ObjectFactory;
 import cadelac.framework.blade.core.object.Prototype2ConcreteMapSimple;
 import cadelac.framework.blade.core.state.StateLess;
 
@@ -60,8 +57,6 @@ public abstract class ApplicationSimple
 		
 		Framework.setApplication(this);
 
-		Framework.setRpcTable(new ConcurrentHashMap<Long,RpcTicket<? extends Message>>());
-
 		captureCommandSwitches();
 		
 		configureProperties();
@@ -74,9 +69,9 @@ public abstract class ApplicationSimple
 		Framework.setPrototype2ConcreteMap(new Prototype2ConcreteMapSimple());
 		
 		// create and set object factory
-		Framework.setObjectFactory(new ObjectFactorySimple());
+		Framework.setObjectFactory(ObjectFactory.create());
 		
-		Framework.setMonitor(new MonitorSimple());
+		Framework.setMonitor(Monitor.create());
 
 		Framework.setQuantum(calculateQuantum());
 		
@@ -129,22 +124,16 @@ public abstract class ApplicationSimple
 		else
 			Framework.setCompiler(new DefaultCompiler());
 	}
-	
-	private void primeThePump() 
+
+	private void primeThePump()
 			throws Exception {
 		// complete boot process by sending a message (prevents application from exiting)
-		final Push<BootMsg,StateLess> bootPushHandler = 
-				new PushBase<BootMsg,StateLess>(
-						"BootHandler"
-						, (msg_,state) -> {
-							Framework.setBootTime(Utilities.getTimestamp());
-							logger.info(String.format("booting: timestamp: %d", Framework.getBootTime()));
-						}
-						, m -> StateLess.STATELESS_STATE_ID
-						, m -> StateLess.STATELESS_STATE
-				);
-		Dispatch.bind(BootMsg.class, bootPushHandler);
-		Dispatch.push(Framework.getObjectFactory().fabricate(BootMsg.class));
+		Framework.getObjectFactory()
+		.fabricate(BootMsg.class)
+		.push(() -> {
+			Framework.setBootTime(Utilities.getTimestamp());
+			logger.info(String.format("booting: timestamp: %d", Framework.getBootTime()));
+		});
 	}
 
 	private void captureCommandSwitches() throws ArgumentException {

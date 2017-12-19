@@ -1,9 +1,7 @@
 package cadelac.framework.blade.core.object;
 
-import java.io.IOException;
-
+import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
-import cadelac.framework.blade.core.exception.SystemException;
 import cadelac.framework.blade.core.message.Generated;
 
 public interface ObjectFactory {
@@ -25,9 +23,31 @@ public interface ObjectFactory {
 	 * @throws Exception 
 	 * @throws FrameworkException 
 	 */
-	public <T extends Generated> T fabricate(Class<T> type_, ObjectPopulator<T> objectPopulator_) 
+	public <T extends Generated> 
+	T fabricate(Class<T> type_, ObjectPopulator<T> objectPopulator_)
 			throws Exception;
 	
-	public Class<? extends Generated> register(final Class<? extends Generated> protoClass_) 
-			throws IOException, ClassNotFoundException, SystemException;
+	
+	static ObjectFactory create() {
+		return new ObjectFactory() {
+			@Override
+			public <T extends Generated> 
+			T fabricate(Class<T> type_) throws Exception {
+				return fabricate(type_, p -> {});
+			}
+
+			@Override
+			public <T extends Generated> 
+			T fabricate(Class<T> type_, ObjectPopulator<T> objectPopulator_) 
+					throws Exception {
+				final Class<? extends Generated> concreteType = 
+						Framework.getPrototype2ConcreteMap().get(type_);
+				
+				@SuppressWarnings("unchecked")
+				final T createdObject = (T) concreteType.newInstance();
+				objectPopulator_.populate(createdObject);
+				return createdObject;
+			}
+		};
+	}
 }

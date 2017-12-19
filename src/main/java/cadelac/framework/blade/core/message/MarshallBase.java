@@ -20,17 +20,19 @@ import javax.json.JsonObjectBuilder;
 import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
-import cadelac.framework.blade.core.code.annotation.ColumnName;
-import cadelac.framework.blade.core.code.annotation.FlattenAs;
-import cadelac.framework.blade.core.code.annotation.InflateAs;
-import cadelac.framework.blade.core.code.annotation.MarshallNo;
-import cadelac.framework.blade.core.code.annotation.TableName;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.exception.JsonMessageException;
 import cadelac.framework.blade.facility.db.DbCommConnection;
+import cadelac.framework.blade.facility.db.annotation.ColumnName;
+import cadelac.framework.blade.facility.db.annotation.FlattenAs;
+import cadelac.framework.blade.facility.db.annotation.InflateAs;
+import cadelac.framework.blade.facility.db.annotation.MarshallNo;
+import cadelac.framework.blade.facility.db.annotation.TableName;
+import cadelac.framework.blade.v2.core.dispatch.DeliverableBase;
 
-public abstract class MarshallBase implements Marshallable {
+public abstract class MarshallBase 
+		extends DeliverableBase implements Marshallable {
 
 	// flatten
 	public void marshall(final JsonObjectBuilder jbuilder) {

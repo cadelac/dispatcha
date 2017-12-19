@@ -1,5 +1,6 @@
 package cadelac.framework.blade.core.code.compiler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.tools.JavaCompiler;
@@ -28,8 +29,28 @@ public class DefaultCompiler implements DynamicCompiler {
 	
 	@Override
 	public int compile(File sourceFile_) {
-		return CompileHelper.compile(_compiler, _classPath, _classDir.toString(), sourceFile_.toString());
+		return compile(_compiler, _classPath, _classDir.toString(), sourceFile_.toString());
 	}
+	
+	private static int compile(final JavaCompiler compiler_, final String classPath_, final String classDir_, final String sourceText_) {
+		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+		ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+		final String[] arguments = new String[] { 
+				"-d", classDir_, 
+				"-classpath", classPath_ + File.pathSeparatorChar + classDir_,
+				sourceText_
+				};
+		
+		int rc = compiler_.run(null, stdout, stderr, arguments);
+		
+		if (rc != 0) {
+			final String stdoutStr = new String(stdout.toByteArray());
+			final String stderrStr = new String(stderr.toByteArray());
+			logger.error("\t*** compile error:\nstdout:\n" + stdoutStr + "\nstderr:\n" + stderrStr);
+		}
+		return rc;
+	}
+	
 
 	@Override
 	public File getSourceDir() {

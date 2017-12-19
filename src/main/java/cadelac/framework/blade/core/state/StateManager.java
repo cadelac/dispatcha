@@ -9,7 +9,9 @@ import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.exception.StateException;
 import cadelac.framework.blade.core.message.Dispatchable;
-import cadelac.framework.blade.core.state.experimental.StateId;
+import cadelac.framework.blade.v2.core.dispatch.CanProvideState;
+import cadelac.framework.blade.v2.core.dispatch.StateId;
+import cadelac.framework.blade.v2.core.dispatch.StatePolicy;
 
 public class StateManager {
 
@@ -47,11 +49,11 @@ public class StateManager {
 		}
 	}
 
-	/**/
 	@SuppressWarnings("unchecked")
-	public static <S extends State> 
-	S getState(final StateId stateId_) 
-			throws ArgumentException, InitializationException {
+	public static <S extends State> S getState(
+			final StateId stateId_) 
+					throws ArgumentException
+					, InitializationException {
 		if (stateId_ == null)
 			throw new ArgumentException("state id must not be null");
 		if (_states == null)
@@ -59,10 +61,7 @@ public class StateManager {
 		return (S) _states.get(stateId_.getId());
 	}
 	
-
-	
-	public static
-	boolean isExists(final StateId stateId_) 
+	public static boolean isExists(final StateId stateId_) 
 			throws ArgumentException, InitializationException {
 		if (stateId_ == null)
 			throw new ArgumentException("state id must not be null");
@@ -71,8 +70,7 @@ public class StateManager {
 		return _states.containsKey(stateId_.getId());
 	}
 	
-	public static <S extends State>
-	S installState(final S state_) 
+	public static <S extends State> S installState(final S state_) 
 			//throws ArgumentException, InitializationException 
 	{
 		/*
@@ -99,6 +97,58 @@ public class StateManager {
 			throw new ArgumentException("dispatchable must not be null");
 	}
 	
+	public static final StatePolicy DEFAULT_STATE_POLICY = StateManager.AUTO_CREATE;
+
+	public static final StatePolicy AUTO_CREATE = new StatePolicy() {
+		@Override
+		public <S extends State> 
+		S stateNotFoundBehavior(
+				CanProvideState<S> stateProvider_) 
+						throws Exception {
+			return stateProvider_.getState();
+		}
+		@Override
+		public <S extends State> 
+		S stateIsFoundBehavior(
+				CanProvideState<S> stateProvider_) 
+						throws Exception {
+			return stateProvider_.getState();
+		}
+	};
+
+	public static final StatePolicy MUST_PRE_EXIST = new StatePolicy() {
+		@Override
+		public <S extends State> 
+		S stateNotFoundBehavior(
+				CanProvideState<S> stateProvider_) 
+						throws Exception {
+			throw new StateException("State not found: must already exist");
+		}
+		@Override
+		public <S extends State> 
+		S stateIsFoundBehavior(
+				CanProvideState<S> stateProvider_)
+						throws Exception {
+			return stateProvider_.getState();
+		}
+	};
+
+	public static final StatePolicy ALWAYS_CREATE = new StatePolicy() {
+		@Override
+		public <S extends State> 
+		S stateNotFoundBehavior(
+				CanProvideState<S> stateProvider_) 
+						throws Exception {
+			return stateProvider_.getState();
+		}
+		@Override
+		public <S extends State> 
+		S stateIsFoundBehavior(
+				CanProvideState<S> stateProvider_)
+						throws Exception {
+			throw new StateException("State found: must not already exist");
+		}
+	};
 	
 	private static final Logger logger = Logger.getLogger(StateManager.class);
 	

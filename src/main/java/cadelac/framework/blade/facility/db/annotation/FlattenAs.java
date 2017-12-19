@@ -1,4 +1,4 @@
-package cadelac.framework.blade.core.code.annotation;
+package cadelac.framework.blade.facility.db.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

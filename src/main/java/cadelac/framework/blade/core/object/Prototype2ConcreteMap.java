@@ -22,8 +22,4 @@ public interface Prototype2ConcreteMap {
 	public void put(
 			final Class<? extends Generated> prototypeClass_
 			, final Class<? extends Generated> concreteClass_);
-	
-	public Class<? extends Generated> register(
-			final Class<? extends Generated> protoClass_) 
-					throws IOException, ClassNotFoundException, SystemException;
 }

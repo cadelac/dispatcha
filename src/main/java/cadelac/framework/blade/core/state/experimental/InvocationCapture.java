@@ -2,6 +2,7 @@ package cadelac.framework.blade.core.state.experimental;
 
 import cadelac.framework.blade.core.dispatch.Dispatch;
 import cadelac.framework.blade.core.state.State;
+import cadelac.framework.blade.v2.core.dispatch.StateBlock;
 
 public class InvocationCapture<S extends State> {
 

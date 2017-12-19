@@ -7,7 +7,7 @@ import cadelac.framework.blade.comm.CommCredentials;
 import cadelac.framework.blade.comm.websocket.WebsocketConfigInfo;
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.exception.InitializationException;
-import cadelac.framework.blade.core.message.json.JsonDecoder;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.blade.facility.db.DbCommConnection;
 import cadelac.framework.blade.facility.db.DbCommCredentials;
 import cadelac.framework.blade.facility.db.DbCommInitParams;
@@ -34,7 +34,7 @@ public class Configurator {
 				, p -> {
 					final String jsonText = Utilities.readFile(jsonFilepath);
 					logger.debug("Configuration: " + jsonText);
-					JsonDecoder.decode(p, jsonText);
+					JsonFormat.decode(p, jsonText);
 				}
 		);
 		
