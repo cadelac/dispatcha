@@ -9,6 +9,7 @@ import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.exception.StateException;
 import cadelac.framework.blade.core.message.Dispatchable;
+import cadelac.framework.blade.v2.core.dispatch.CanChooseStateId;
 import cadelac.framework.blade.v2.core.dispatch.CanProvideState;
 import cadelac.framework.blade.v2.core.dispatch.StateId;
 import cadelac.framework.blade.v2.core.dispatch.StatePolicy;
@@ -84,6 +85,27 @@ public class StateManager {
 		return state_;
 	}
 
+	public static <S extends State> 
+	S realizeState(
+			StatePolicy policy_
+			, CanChooseStateId stateChooser_
+			, CanProvideState<S> stateProvider_) 
+					throws Exception {
+		
+		final StateId stateId = stateChooser_.getStateId();
+		final S lookedUpState = getState(stateId);
+		
+		if (lookedUpState == null) { // not found
+			final S providedState = policy_.stateNotFoundBehavior(stateProvider_);
+			installState(providedState);
+			return providedState;
+		}
+		
+		return policy_.stateIsFoundBehavior(() -> { 
+			return lookedUpState; 
+		});
+	}
+	
 	private static <D extends Dispatchable, S extends State>
 	void verifyArguments(
 			final StateAware<D,S> handler_
@@ -96,59 +118,6 @@ public class StateManager {
 		if (dispatchable_==null)
 			throw new ArgumentException("dispatchable must not be null");
 	}
-	
-	public static final StatePolicy DEFAULT_STATE_POLICY = StateManager.AUTO_CREATE;
-
-	public static final StatePolicy AUTO_CREATE = new StatePolicy() {
-		@Override
-		public <S extends State> 
-		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
-						throws Exception {
-			return stateProvider_.getState();
-		}
-		@Override
-		public <S extends State> 
-		S stateIsFoundBehavior(
-				CanProvideState<S> stateProvider_) 
-						throws Exception {
-			return stateProvider_.getState();
-		}
-	};
-
-	public static final StatePolicy MUST_PRE_EXIST = new StatePolicy() {
-		@Override
-		public <S extends State> 
-		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
-						throws Exception {
-			throw new StateException("State not found: must already exist");
-		}
-		@Override
-		public <S extends State> 
-		S stateIsFoundBehavior(
-				CanProvideState<S> stateProvider_)
-						throws Exception {
-			return stateProvider_.getState();
-		}
-	};
-
-	public static final StatePolicy ALWAYS_CREATE = new StatePolicy() {
-		@Override
-		public <S extends State> 
-		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
-						throws Exception {
-			return stateProvider_.getState();
-		}
-		@Override
-		public <S extends State> 
-		S stateIsFoundBehavior(
-				CanProvideState<S> stateProvider_)
-						throws Exception {
-			throw new StateException("State found: must not already exist");
-		}
-	};
 	
 	private static final Logger logger = Logger.getLogger(StateManager.class);
 	

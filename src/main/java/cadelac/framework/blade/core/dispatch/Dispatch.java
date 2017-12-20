@@ -14,7 +14,6 @@ import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.exception.RouteException;
 import cadelac.framework.blade.core.exception.SystemException;
 import cadelac.framework.blade.core.invocation.Response;
-import cadelac.framework.blade.core.invocation.ResponseBase;
 import cadelac.framework.blade.core.message.Dispatchable;
 import cadelac.framework.blade.core.message.Generated;
 import cadelac.framework.blade.core.message.Message;
@@ -22,6 +21,7 @@ import cadelac.framework.blade.core.state.State;
 import cadelac.framework.blade.core.state.StateAware;
 import cadelac.framework.blade.core.state.StateLess;
 import cadelac.framework.blade.core.state.StateManager;
+import cadelac.framework.blade.v2.core.dispatch.FastDispatch;
 import cadelac.framework.blade.v2.core.dispatch.StateBlock;
 
 
@@ -350,7 +350,7 @@ public class Dispatch {
 						, callFrame.jobId
 						, callFrame.state.getId()));
 				logger.warn(FrameworkException.getStringStackTrace(e_));
-				return new ResponseBase<R>(e_);
+				return FastDispatch.makeExceptionResponse(e_);
 			}			
 		}
 		
@@ -363,7 +363,7 @@ public class Dispatch {
 					, callFrame.stateAware.getId()
 					, callFrame.jobId
 					, callFrame.state.getId()));
-			return new ResponseBase<R>(
+			return FastDispatch.makeResponse(
 					pull.getCalculation().calculate(
 							msg_
 							, callFrame.state));

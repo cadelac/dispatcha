@@ -51,8 +51,8 @@ public class DeliverableBase
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
 
-		final S state = FastDispatch.realizeState(
-				StateManager.DEFAULT_STATE_POLICY
+		final S state = StateManager.realizeState(
+				StatePolicy.DEFAULT_STATE_POLICY
 				, stateChooser_
 				, stateProvider_);
 
@@ -69,8 +69,8 @@ public class DeliverableBase
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
 
-		final S state = FastDispatch.realizeState(
-				StateManager.DEFAULT_STATE_POLICY
+		final S state = StateManager.realizeState(
+				StatePolicy.DEFAULT_STATE_POLICY
 				, stateChooser_
 				, stateProvider_);
 
@@ -88,8 +88,8 @@ public class DeliverableBase
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
 
-		final S state = FastDispatch.realizeState(
-				StateManager.DEFAULT_STATE_POLICY
+		final S state = StateManager.realizeState(
+				StatePolicy.DEFAULT_STATE_POLICY
 				, stateChooser_
 				, stateProvider_);
 
@@ -108,7 +108,7 @@ public class DeliverableBase
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
 
-		final S state = FastDispatch.realizeState(
+		final S state = StateManager.realizeState(
 				statePolicy_
 				, stateChooser_
 				, stateProvider_);
@@ -127,7 +127,7 @@ public class DeliverableBase
 			, StateBlock<S> stateBlock_)
 					throws Exception {
 
-		final S state = FastDispatch.realizeState(
+		final S state = StateManager.realizeState(
 				statePolicy_
 				, stateChooser_
 				, stateProvider_);
@@ -147,7 +147,7 @@ public class DeliverableBase
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
 
-		final S state = FastDispatch.realizeState(
+		final S state = StateManager.realizeState(
 				statePolicy_
 				, stateChooser_
 				, stateProvider_);
@@ -165,8 +165,8 @@ public class DeliverableBase
 			, CanProvideState<S> stateProvider_
 			, PullBlock<R, S> pullBlock_) 
 					throws Exception {
-		final S state = FastDispatch.realizeState(
-				StateManager.DEFAULT_STATE_POLICY
+		final S state = StateManager.realizeState(
+				StatePolicy.DEFAULT_STATE_POLICY
 				, stateChooser_
 				, stateProvider_);
 		return FastDispatch.pull(state, pullBlock_);
@@ -195,7 +195,7 @@ public class DeliverableBase
 			, CanProvideState<S> stateProvider_
 			, PullBlock<R, S> pullBlock_)
 					throws Exception {
-		final S state = FastDispatch.realizeState(
+		final S state = StateManager.realizeState(
 				statePolicy_
 				, stateChooser_
 				, stateProvider_);

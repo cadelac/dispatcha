@@ -11,19 +11,46 @@ import org.apache.log4j.Logger;
 public class DefaultCompiler implements DynamicCompiler {
 
 	public DefaultCompiler() {
-		this(System.getProperty("java.class.path"), System.getProperty("user.dir"), REPOSITORY_DIR, SOURCE_DIR, CLASS_DIR);
+		this(
+				System.getProperty("java.class.path")
+				, System.getProperty("user.dir")
+				, REPOSITORY_DIR
+				, SOURCE_DIR
+				, CLASS_DIR);
 	}
 	
 	public DefaultCompiler(final String rootDir_) {
-		this(System.getProperty("java.class.path"), rootDir_, REPOSITORY_DIR, SOURCE_DIR, CLASS_DIR);
+		this(
+				System.getProperty("java.class.path")
+				, rootDir_
+				, REPOSITORY_DIR
+				, SOURCE_DIR
+				, CLASS_DIR);
 	}
 	
-	public DefaultCompiler(final String classPath_, final String rootDir_, final String repoDir_, final String sourceDir_, final String classDir_)  {
+	public DefaultCompiler(
+			final String classPath_
+			, final String rootDir_
+			, final String repoDir_
+			, final String sourceDir_
+			, final String classDir_) {
 		_classPath = classPath_;
 		_repoDir = new File(rootDir_, repoDir_);
 		_sourceDir = new File(_repoDir, sourceDir_);
 		_classDir = new File(_repoDir, classDir_);
-		logger.debug("compiler created;\n\tclassPath\t[" + _classPath + "],\n\trootDir\t\t[" + rootDir_ + "],\n\trepoDir\t\t[" + _repoDir + "],\n\tsrcDir\t\t[" + _sourceDir + "],\n\tclassDir\t[" + _classDir + "]");
+		logger.debug(String.format(
+				"compiler created;\n"
+				+ "\tclassPath\t[%s]\n"
+				+ "\trootDir\t\t[%s]\n"
+				+ "\trepoDir\t\t[%s]\n"
+				+ "\tsrcDir\t\t[%s]\n"
+				+ "\tclassDir\t[%s]"
+				, _classPath
+				, rootDir_
+				, _repoDir
+				, _sourceDir
+				, _classDir));
+
 		_compiler = ToolProvider.getSystemJavaCompiler();
 	}
 	
@@ -32,7 +59,12 @@ public class DefaultCompiler implements DynamicCompiler {
 		return compile(_compiler, _classPath, _classDir.toString(), sourceFile_.toString());
 	}
 	
-	private static int compile(final JavaCompiler compiler_, final String classPath_, final String classDir_, final String sourceText_) {
+	private static int compile(
+			final JavaCompiler compiler_
+			, final String classPath_
+			, final String classDir_
+			, final String sourceText_) {
+		
 		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
 		ByteArrayOutputStream stderr = new ByteArrayOutputStream();
 		final String[] arguments = new String[] { 

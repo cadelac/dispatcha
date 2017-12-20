@@ -8,9 +8,7 @@ import cadelac.framework.blade.core.dispatch.Execute;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.SystemException;
 import cadelac.framework.blade.core.invocation.Response;
-import cadelac.framework.blade.core.invocation.ResponseBase;
 import cadelac.framework.blade.core.state.State;
-import cadelac.framework.blade.core.state.StateManager;
 
 public class FastDispatch {
 
@@ -172,32 +170,41 @@ public class FastDispatch {
 			, PullBlock<R,S> pullBlock_) 
 					throws Exception {
 		return Execute.executePull(
-				() -> new ResponseBase<R>(pullBlock_.block(state_)));
+				() -> { 
+					// this block runs on a new thread
+					try {
+						// lock on state
+						synchronized (state_) {
+							return makeResponse(pullBlock_.block(state_));
+						}
+					}
+					catch (Exception e_) {
+						// handle any exceptions
+						logger.warn(String.format(
+								"exception on pull request:\n%s"
+								, FrameworkException.getStringStackTrace(e_)));
+						return makeExceptionResponse(e_);
+					}
+				});		
 	}
 
-	
-	public static <S extends State> 
-	S realizeState(
-			StatePolicy policy_
-			, CanChooseStateId stateChooser_
-			, CanProvideState<S> stateProvider_) 
-					throws Exception {
-		
-		final StateId stateId = stateChooser_.getStateId();
-		final S lookedUpState = StateManager.getState(stateId);
-		
-		if (lookedUpState == null) { // not found
-			final S providedState = policy_.stateNotFoundBehavior(stateProvider_);
-			StateManager.installState(providedState);
-			return providedState;
-		}
-		
-		return policy_.stateIsFoundBehavior(() -> { 
-			return lookedUpState; 
-		});
+	public static <R> Response<R> makeResponse(final R r) {
+		return new Response<R>() {
+			@Override
+			public R getResponse() { return r; }
+			@Override
+			public Exception getException() { return null; };
+		};
+	}
+	public static <R> Response<R> makeExceptionResponse(final Exception e_) {
+		return new Response<R>() {
+			@Override
+			public R getResponse() { return null; }
+			@Override
+			public Exception getException() { return e_; };
+		};
 	}
 	
-
 	public static <R>
 	R extractResponse(final Future<Response<R>> future) 
 			throws Exception {
