@@ -1,9 +1,13 @@
-package cadelac.framework.blade.v2.core.dispatch;
+package cadelac.framework.blade.core.message;
 
 import java.util.concurrent.Future;
 
+import cadelac.framework.blade.core.dispatch.PullBlock;
 import cadelac.framework.blade.core.invocation.Response;
+import cadelac.framework.blade.core.state.CanChooseStateId;
+import cadelac.framework.blade.core.state.CanProvideState;
 import cadelac.framework.blade.core.state.State;
+import cadelac.framework.blade.core.state.StatePolicy;
 
 public interface Pullable {
 

@@ -1,6 +1,4 @@
-package cadelac.framework.blade.v2.core.dispatch;
-
-import cadelac.framework.blade.core.state.State;
+package cadelac.framework.blade.core.state;
 
 /**
  * Can acquire/create State.

@@ -29,10 +29,11 @@ import cadelac.framework.blade.facility.db.annotation.FlattenAs;
 import cadelac.framework.blade.facility.db.annotation.InflateAs;
 import cadelac.framework.blade.facility.db.annotation.MarshallNo;
 import cadelac.framework.blade.facility.db.annotation.TableName;
-import cadelac.framework.blade.v2.core.dispatch.DeliverableBase;
 
-public abstract class MarshallBase 
-		extends DeliverableBase implements Marshallable {
+public abstract class MarshallableBase 
+		extends DeliverableBase 
+		implements Marshallable
+		, Demarshallable {
 
 	// flatten
 	public void marshall(final JsonObjectBuilder jbuilder) {
@@ -476,5 +477,5 @@ public abstract class MarshallBase
 	private static final String INTEGER_ARRAY_ELEMENT = "e";
 	private static final String STRING_ARRAY_ELEMENT = "e";
 	
-	private static final Logger logger = Logger.getLogger(MarshallBase.class);
+	private static final Logger logger = Logger.getLogger(MarshallableBase.class);
 }

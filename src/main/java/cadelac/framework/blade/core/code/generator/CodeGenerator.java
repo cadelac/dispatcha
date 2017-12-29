@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.JsonMessageException;
-import cadelac.framework.blade.core.message.MarshallBase;
+import cadelac.framework.blade.core.message.MarshallableBase;
 import cadelac.framework.blade.core.message.Message;
 import cadelac.framework.blade.facility.db.annotation.ColumnName;
 import cadelac.framework.blade.facility.db.annotation.FlattenAs;
@@ -145,7 +145,7 @@ public class CodeGenerator {
 		.addImport(FrameworkException.class)
 		.addImport(JsonMessageException.class)
 		.addImport(Message.class)
-		.addImport(MarshallBase.class)
+		.addImport(MarshallableBase.class)
 		.addLinebreak(1)
 		
 		// annotation
@@ -176,7 +176,7 @@ public class CodeGenerator {
 				code.append(String.format("\n@TableName(\"%s\")", tableNameValue));
 			}
 			
-			code.append("\npublic class " + concreteClassName + " extends " + MarshallBase.class.getSimpleName() + " implements " + protoClassName + " {\n\n");
+			code.append("\npublic class " + concreteClassName + " extends " + MarshallableBase.class.getSimpleName() + " implements " + protoClassName + " {\n\n");
 		})
 		
 		// add no-arg constructor

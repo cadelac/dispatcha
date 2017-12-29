@@ -1,4 +1,4 @@
-package cadelac.framework.blade.v2.core.dispatch;
+package cadelac.framework.blade.core.dispatch;
 
 @FunctionalInterface
 public interface StateLessBlock {

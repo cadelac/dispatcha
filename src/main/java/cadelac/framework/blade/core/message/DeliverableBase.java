@@ -1,10 +1,17 @@
-package cadelac.framework.blade.v2.core.dispatch;
+package cadelac.framework.blade.core.message;
 
 import java.util.concurrent.Future;
 
+import cadelac.framework.blade.core.dispatch.Dispatch;
+import cadelac.framework.blade.core.dispatch.PullBlock;
+import cadelac.framework.blade.core.dispatch.StateBlock;
+import cadelac.framework.blade.core.dispatch.StateLessBlock;
 import cadelac.framework.blade.core.invocation.Response;
+import cadelac.framework.blade.core.state.CanChooseStateId;
+import cadelac.framework.blade.core.state.CanProvideState;
 import cadelac.framework.blade.core.state.State;
 import cadelac.framework.blade.core.state.StateManager;
+import cadelac.framework.blade.core.state.StatePolicy;
 
 public class DeliverableBase 
 		implements Deliverable {
@@ -13,7 +20,7 @@ public class DeliverableBase
 	public Pushable push(
 			StateLessBlock stateLessBlock_) 
 					throws Exception {
-		FastDispatch.stateLessPush(stateLessBlock_);
+		Dispatch.stateLessPush(stateLessBlock_);
 		return this;
 	}
 
@@ -22,7 +29,7 @@ public class DeliverableBase
 			long delay_
 			, StateLessBlock stateLessBlock_) 
 					throws Exception {
-		FastDispatch.delayedStateLessPush(
+		Dispatch.delayedStateLessPush(
 				delay_
 				, stateLessBlock_);
 		return this;
@@ -34,7 +41,7 @@ public class DeliverableBase
 			, long delay_
 			, StateLessBlock stateLessBlock_) 
 					throws Exception {
-		FastDispatch.periodicStateLessPush(
+		Dispatch.periodicStateLessPush(
 				period_
 				, delay_
 				, stateLessBlock_);
@@ -56,7 +63,7 @@ public class DeliverableBase
 				, stateChooser_
 				, stateProvider_);
 
-		FastDispatch.stateFullPush(state, stateBlock_);
+		Dispatch.stateFullPush(state, stateBlock_);
 		return this;
 	}
 	
@@ -74,7 +81,7 @@ public class DeliverableBase
 				, stateChooser_
 				, stateProvider_);
 
-		FastDispatch.delayedStateFullPush(state, delay_, stateBlock_);
+		Dispatch.delayedStateFullPush(state, delay_, stateBlock_);
 		return this;
 	}
 
@@ -93,7 +100,7 @@ public class DeliverableBase
 				, stateChooser_
 				, stateProvider_);
 
-		FastDispatch.periodicStateFullPush(state, period_, delay_, stateBlock_);
+		Dispatch.periodicStateFullPush(state, period_, delay_, stateBlock_);
 		return this;
 	}
 	
@@ -113,7 +120,7 @@ public class DeliverableBase
 				, stateChooser_
 				, stateProvider_);
 
-		FastDispatch.stateFullPush(state, stateBlock_);
+		Dispatch.stateFullPush(state, stateBlock_);
 		return this;
 	}
 
@@ -132,7 +139,7 @@ public class DeliverableBase
 				, stateChooser_
 				, stateProvider_);
 
-		FastDispatch.delayedStateFullPush(state, delay_, stateBlock_);
+		Dispatch.delayedStateFullPush(state, delay_, stateBlock_);
 		return this;
 	}
 
@@ -152,7 +159,7 @@ public class DeliverableBase
 				, stateChooser_
 				, stateProvider_);
 
-		FastDispatch.periodicStateFullPush(state, period_, delay_, stateBlock_);
+		Dispatch.periodicStateFullPush(state, period_, delay_, stateBlock_);
 		return this;
 	}	
 
@@ -169,7 +176,7 @@ public class DeliverableBase
 				StatePolicy.DEFAULT_STATE_POLICY
 				, stateChooser_
 				, stateProvider_);
-		return FastDispatch.pull(state, pullBlock_);
+		return Dispatch.pull(state, pullBlock_);
 	}
 
 	@Override
@@ -179,7 +186,7 @@ public class DeliverableBase
 			, CanProvideState<S> stateProvider_
 			, PullBlock<R,S> pullBlock_) 
 					throws Exception {
-		return FastDispatch.extractResponse(
+		return Dispatch.extractResponse(
 				futurePull(
 						stateChooser_
 						, stateProvider_
@@ -199,7 +206,7 @@ public class DeliverableBase
 				statePolicy_
 				, stateChooser_
 				, stateProvider_);
-		return FastDispatch.pull(state, pullBlock_);
+		return Dispatch.pull(state, pullBlock_);
 	}
 	
 	@Override
@@ -210,7 +217,7 @@ public class DeliverableBase
 			, CanProvideState<S> stateProvider_
 			, PullBlock<R, S> pullBlock_) 
 					throws Exception {
-		return FastDispatch.extractResponse(
+		return Dispatch.extractResponse(
 				futurePull(
 						statePolicy_
 						, stateChooser_

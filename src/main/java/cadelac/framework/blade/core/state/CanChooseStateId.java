@@ -1,4 +1,4 @@
-package cadelac.framework.blade.v2.core.dispatch;
+package cadelac.framework.blade.core.state;
 
 /**
  * Determines the StateId based on the given dispatchable.
