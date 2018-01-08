@@ -12,6 +12,10 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
+import cadelac.framework.blade.core.exception.FrameworkException;
+
 public class Utilities {
 
 	public static long getTimestamp() {
@@ -81,5 +85,11 @@ public class Utilities {
 		
 		Utilities.writeFile(sourceFile, sourceCode_);
 		return sourceFile;
+	}
+	
+	public static void logException(final Exception e, final Logger logger_) {
+		logger_.warn(String.format(
+				"Exception on ticker change\n:%s"
+				, FrameworkException.getStringStackTrace(e)));
 	}
 }
