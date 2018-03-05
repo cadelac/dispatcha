@@ -50,13 +50,12 @@ public class StateManager {
 		
 		if (lookedUpState == null) { // not found
 			final S providedState = policy_.stateNotFoundBehavior(stateProvider_);
-			installState(providedState);
+			if (providedState != null)
+				installState(providedState);
 			return providedState;
 		}
 		
-		return policy_.stateIsFoundBehavior(() -> { 
-			return lookedUpState; 
-		});
+		return policy_.stateIsFoundBehavior(() -> lookedUpState);
 	}
 
 	private static void checkArguments(final StateId stateId_) 

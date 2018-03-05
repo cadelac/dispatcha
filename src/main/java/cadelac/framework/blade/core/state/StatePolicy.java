@@ -68,6 +68,28 @@ public interface StatePolicy {
 		}
 	};
 	
+	/**
+	 * If state does not already exist, do not invoke 
+	 */
+	StatePolicy NOSTATE_IGNORE = new StatePolicy() {
+		@Override
+		public <S extends State> 
+		S stateNotFoundBehavior(
+				CanProvideState<S> stateProvider_) 
+						throws Exception {
+			// don't even use the stateProvider_
+			// just signal our intent to ignore processing
+			return null;
+		}
+		@Override
+		public <S extends State> 
+		S stateIsFoundBehavior(
+				CanProvideState<S> stateProvider_)
+						throws Exception {
+			return stateProvider_.getState();
+		}
+	};
+	
 	StatePolicy DEFAULT_STATE_POLICY = AUTO_CREATE;
 
 }

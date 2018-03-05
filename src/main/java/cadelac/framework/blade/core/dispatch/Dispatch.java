@@ -95,19 +95,21 @@ public class Dispatch {
 			S state_
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
-		Execute.immediateExecution(
-				() -> {
-					try {
-						synchronized(state_) {
-							stateBlock_.block(state_);
-						}
-					} 
-					catch (Exception e) {
-						logger.warn(String.format(
-								"Exception on immediate state full push\n:%s"
-								, FrameworkException.getStringStackTrace(e)));
-					} 
-				});
+		if (state_ != null) {
+			Execute.immediateExecution(
+					() -> {
+						try {
+							synchronized(state_) {
+								stateBlock_.block(state_);
+							}
+						} 
+						catch (Exception e) {
+							logger.warn(String.format(
+									"Exception on immediate state full push\n:%s"
+									, FrameworkException.getStringStackTrace(e)));
+						} 
+					});
+		}
 	}
 	
 	/**
@@ -119,20 +121,22 @@ public class Dispatch {
 			, long delay_
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
-		Execute.delayedExecution(
-				() -> {
-					try {
-						synchronized(state_) {
-							stateBlock_.block(state_);
-						}
-					} 
-					catch (Exception e) {
-						logger.warn(String.format(
-								"Exception on delayed state full push\n:%s"
-								, FrameworkException.getStringStackTrace(e)));
-					} 
-				}
-				, delay_);
+		if (state_ != null) {
+			Execute.delayedExecution(
+					() -> {
+						try {
+							synchronized(state_) {
+								stateBlock_.block(state_);
+							}
+						} 
+						catch (Exception e) {
+							logger.warn(String.format(
+									"Exception on delayed state full push\n:%s"
+									, FrameworkException.getStringStackTrace(e)));
+						} 
+					}
+					, delay_);
+		}
 	}
 	
 	/**
@@ -145,21 +149,23 @@ public class Dispatch {
 			, long delay_
 			, StateBlock<S> stateBlock_) 
 					throws Exception {
-		Execute.repeatedExecution(
-				() -> {
-					try {
-						synchronized(state_) {
-							stateBlock_.block(state_);
-						}
-					} 
-					catch (Exception e) {
-						logger.warn(String.format(
-								"Exception on periodic state full push\n:%s"
-								, FrameworkException.getStringStackTrace(e)));
-					} 
-				}
-				, delay_
-				, period_);
+		if (state_ != null) {
+			Execute.repeatedExecution(
+					() -> {
+						try {
+							synchronized(state_) {
+								stateBlock_.block(state_);
+							}
+						} 
+						catch (Exception e) {
+							logger.warn(String.format(
+									"Exception on periodic state full push\n:%s"
+									, FrameworkException.getStringStackTrace(e)));
+						} 
+					}
+					, delay_
+					, period_);
+		}
 	}	
 	
 	
