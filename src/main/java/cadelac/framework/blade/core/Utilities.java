@@ -89,7 +89,8 @@ public class Utilities {
 	
 	public static void logException(final Exception e, final Logger logger_) {
 		logger_.warn(String.format(
-				"Exception on ticker change\n:%s"
+				"Exception: %s\nStacktrace:\n%s"
+				, e.getMessage()
 				, FrameworkException.getStringStackTrace(e)));
 	}
 }

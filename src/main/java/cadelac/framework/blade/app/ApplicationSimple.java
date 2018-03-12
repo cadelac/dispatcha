@@ -17,6 +17,7 @@ import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.code.compiler.DefaultCompiler;
 import cadelac.framework.blade.core.config.ConfigParameters;
 import cadelac.framework.blade.core.config.Configurator;
+import cadelac.framework.blade.core.dispatch.Patch;
 import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;

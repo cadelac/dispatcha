@@ -4,6 +4,7 @@ import cadelac.framework.blade.app.ApplicationSimple;
 import cadelac.framework.blade.core.CommandSwitch;
 import cadelac.framework.blade.core.PropertiesManager;
 import cadelac.framework.blade.core.code.compiler.DynamicCompiler;
+import cadelac.framework.blade.core.dispatch.Patch;
 import cadelac.framework.blade.core.monitor.Monitor;
 import cadelac.framework.blade.core.object.ObjectFactory;
 import cadelac.framework.blade.core.object.Prototype2ConcreteMap;
@@ -114,7 +115,7 @@ public class Framework {
 	public static void setMessageDigestIsEnabled(final boolean messageDigestIsEnabled_) {
 		_messageDigestIsEnabled = messageDigestIsEnabled_;
 	}
-	
+
 	
 	// CONSTANT VALUES
 	public static final String LOGICAL_TRUE		= "true";
@@ -135,4 +136,6 @@ public class Framework {
 	private static int _threadpool_size;
 	private static int _scheduled_threadpool_size; /* for delayed calls */
 	private static boolean _messageDigestIsEnabled;
+
+	public static final Patch $dispatch = new Patch();
 }
