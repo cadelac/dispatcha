@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.comm.CommCredentials;
 import cadelac.framework.blade.comm.websocket.WebsocketConfigInfo;
+import cadelac.framework.blade.core.PropertiesManager;
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.message.json.JsonFormat;
@@ -27,8 +28,16 @@ public class Configurator {
 			final Class<T> class_
 			, final String propertyName_) 
 					throws Exception {
+		final PropertiesManager props = Framework.getPropertiesManager();
+		if (props == null) {
+			throw new InitializationException(String.format(
+					"properties not initialized: %s"
+					, ConfigParameters.PROPERTIES_PATH_ARG));
+		}
+		
+
 		final String jsonFilepath = 
-				Framework.getPropertiesManager().getProperties().getProperty(propertyName_);
+				props.getProperties().getProperty(propertyName_);
 		return Framework.getObjectFactory().fabricate(
 				class_
 				, p -> {

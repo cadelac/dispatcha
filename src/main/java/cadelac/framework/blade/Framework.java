@@ -19,15 +19,6 @@ public class Framework {
 	public static void setCommandSwitch(CommandSwitch commandSwitch_) {
 		_commandSwitch = commandSwitch_;	
 	}
-	
-	
-	public static String getPropertiesFullPathName() {
-		return _propertiesFullPathName;
-	}
-
-	public static void setPropertiesFullPathName(String propertiesFullPathName_) {
-		_propertiesFullPathName = propertiesFullPathName_;	
-	}
 
 	public static PropertiesManager getPropertiesManager() {
 		return _propertiesManager;
@@ -108,13 +99,6 @@ public class Framework {
 		_application = application_;
 	}
 
-	public static boolean getMessageDigestIsEnabled() {
-		return _messageDigestIsEnabled;
-	}
-
-	public static void setMessageDigestIsEnabled(final boolean messageDigestIsEnabled_) {
-		_messageDigestIsEnabled = messageDigestIsEnabled_;
-	}
 
 	
 	// CONSTANT VALUES
@@ -125,7 +109,6 @@ public class Framework {
 	
 	private static ApplicationSimple _application;
 	private static CommandSwitch _commandSwitch;
-	private static String _propertiesFullPathName;
 	private static PropertiesManager _propertiesManager;
 	private static Prototype2ConcreteMap _prototype2ConcreteMap;
 	private static DynamicCompiler _compiler;
@@ -135,7 +118,6 @@ public class Framework {
 	private static long _quantum;
 	private static int _threadpool_size;
 	private static int _scheduled_threadpool_size; /* for delayed calls */
-	private static boolean _messageDigestIsEnabled;
 
 	public static final Patch $dispatch = new Patch();
 }
