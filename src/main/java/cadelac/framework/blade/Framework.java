@@ -13,11 +13,7 @@ import cadelac.framework.blade.core.object.Prototype2ConcreteMap;
 public class Framework {
 	
 	public static CommandSwitch getCommandSwitch() {
-		return _commandSwitch;
-	}
-
-	public static void setCommandSwitch(CommandSwitch commandSwitch_) {
-		_commandSwitch = commandSwitch_;	
+		return $arg;
 	}
 
 	public static PropertiesManager getPropertiesManager() {
@@ -108,7 +104,6 @@ public class Framework {
 	
 	
 	private static ApplicationSimple _application;
-	private static CommandSwitch _commandSwitch;
 	private static PropertiesManager _propertiesManager;
 	private static Prototype2ConcreteMap _prototype2ConcreteMap;
 	private static DynamicCompiler _compiler;
@@ -119,5 +114,8 @@ public class Framework {
 	private static int _threadpool_size;
 	private static int _scheduled_threadpool_size; /* for delayed calls */
 
+	
+
+	public static final CommandSwitch $arg = new CommandSwitch();
 	public static final Patch $dispatch = new Patch();
 }

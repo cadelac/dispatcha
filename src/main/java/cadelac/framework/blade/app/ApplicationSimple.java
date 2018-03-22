@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import cadelac.framework.blade.Framework;
-import cadelac.framework.blade.core.CommandSwitch;
 import cadelac.framework.blade.core.Identified;
 import cadelac.framework.blade.core.IdentifiedBase;
 import cadelac.framework.blade.core.PropertiesManager;
@@ -157,9 +156,7 @@ public abstract class ApplicationSimple
 	}
 
 	private void captureCommandSwitches() throws ArgumentException {
-		final CommandSwitch commandSwitch = new CommandSwitch();
-		commandSwitch.populate(_arguments);
-		Framework.setCommandSwitch(commandSwitch);
+		Framework.$arg.populate(_arguments);
 	}
 	
 	private long calculateQuantum() {

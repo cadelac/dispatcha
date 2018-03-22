@@ -193,22 +193,7 @@ public class Dispatch {
 				});		
 	}
 
-	public static <R> Response<R> makeResponse(final R r) {
-		return new Response<R>() {
-			@Override
-			public R getResponse() { return r; }
-			@Override
-			public Exception getException() { return null; };
-		};
-	}
-	public static <R> Response<R> makeExceptionResponse(final Exception e_) {
-		return new Response<R>() {
-			@Override
-			public R getResponse() { return null; }
-			@Override
-			public Exception getException() { return e_; };
-		};
-	}
+
 	
 	public static <R>
 	R extractResponse(final Future<Response<R>> future) 
@@ -223,6 +208,23 @@ public class Dispatch {
 		return futureResponse.getResponse();
 	}
 
+	
+	private static <R> Response<R> makeResponse(final R r) {
+		return new Response<R>() {
+			@Override
+			public R getResponse() { return r; }
+			@Override
+			public Exception getException() { return null; };
+		};
+	}
+	private static <R> Response<R> makeExceptionResponse(final Exception e_) {
+		return new Response<R>() {
+			@Override
+			public R getResponse() { return null; }
+			@Override
+			public Exception getException() { return e_; };
+		};
+	}
 	
 	private static final Logger logger = Logger.getLogger(Dispatch.class);
 }

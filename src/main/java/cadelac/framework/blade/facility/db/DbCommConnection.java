@@ -68,7 +68,7 @@ public abstract class DbCommConnection extends AbstractCommConnection {
 		_connection = DriverManager.getConnection(connect_string);
 		if (_connection != null) {
 			setIsConnected(true);
-			logger.info("Connected to DB [" + _url.getDbName() + "]");
+//			logger.debug("Connected to DB [" + _url.getDbName() + "]");
 		}
 	}
 	
