@@ -61,7 +61,8 @@ public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 		final String concreteClassName = protoClass_.getSimpleName() + "Simple";
 		
 		/* generate code */
-		final String sourceCode = CodeGenerator.generateSourceCode(protoClass_);
+		final CodeGenerator codeGenerator = new CodeGenerator();
+		final String sourceCode = codeGenerator.generateSourceCode(protoClass_);
 		logger.debug("generated code for concrete class " + packageName + "." + concreteClassName + " for prototype " + protoClass_.getSimpleName());
 		
 		/* create source file */

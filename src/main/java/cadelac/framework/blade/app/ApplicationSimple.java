@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import cadelac.framework.blade.Framework;
+import static cadelac.framework.blade.Framework.$arg;
+
 import cadelac.framework.blade.core.Identified;
 import cadelac.framework.blade.core.IdentifiedBase;
 import cadelac.framework.blade.core.PropertiesManager;
@@ -82,7 +84,7 @@ public abstract class ApplicationSimple
 			throws ArgumentException, IOException {
 		// get full path of properties file
 		final String propertiesPathArg = 
-				Framework.getCommandSwitch().getArgument(
+				$arg.getArgument(
 						ConfigParameters.PROPERTIES_PATH_ARG);
 		if (propertiesPathArg != null && !propertiesPathArg.isEmpty()) {
 			// create properties manager
@@ -104,7 +106,7 @@ public abstract class ApplicationSimple
 	private String getLoggerConfigFile() 
 			throws Exception {
 		String loggerConfigFile = 
-				Framework.getCommandSwitch().getArgument(
+				$arg.getArgument(
 						ConfigParameters.LOGGER_CONFIG_FILE_PATH);
 		if (loggerConfigFile != null && !loggerConfigFile.isEmpty())
 			return loggerConfigFile;
@@ -124,7 +126,7 @@ public abstract class ApplicationSimple
 
 	private void configureCompiler() {
 		String compilerRepo = 
-				Framework.getCommandSwitch().getArgument(
+				$arg.getArgument(
 						ConfigParameters.COMPILER_USER_DIR);
 		if (compilerRepo != null && !compilerRepo.isEmpty())
 			Framework.setCompiler(new DefaultCompiler(compilerRepo));
@@ -162,7 +164,7 @@ public abstract class ApplicationSimple
 	private long calculateQuantum() {
 		long quantum = ConfigParameters.DEFAULT_QUANTUM;
 		
-		String quantumStr = Framework.getCommandSwitch().getArgument(
+		String quantumStr = $arg.getArgument(
 				ConfigParameters.PROP_QUANTUM_DURATION);
 		if (quantumStr != null)
 			// get value from command line argument
@@ -182,7 +184,7 @@ public abstract class ApplicationSimple
 	private int getThreadPoolSize() {
 		int tps = ConfigParameters.DEFAULT_THREADPOOL_SIZE;
 		String threadPoolSize = 
-				Framework.getCommandSwitch().getArgument(
+				$arg.getArgument(
 						ConfigParameters.THREADPOOL_SIZE);
 		if (threadPoolSize!=null) {
 			tps = Integer.parseInt(threadPoolSize);
@@ -203,7 +205,7 @@ public abstract class ApplicationSimple
 	private int getScheduledThreadPoolSize() {
 		int tps = ConfigParameters.DEFAULT_THREADPOOL_SCHEDULED_SIZE;
 		String threadPoolSize = 
-				Framework.getCommandSwitch().getArgument(
+				$arg.getArgument(
 						ConfigParameters.THREADPOOL_SCHEDULED_SIZE);
 		if (threadPoolSize!=null) {
 			tps = Integer.parseInt(threadPoolSize);

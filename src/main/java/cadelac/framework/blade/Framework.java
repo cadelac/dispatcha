@@ -3,6 +3,7 @@ package cadelac.framework.blade;
 import cadelac.framework.blade.app.ApplicationSimple;
 import cadelac.framework.blade.core.CommandSwitch;
 import cadelac.framework.blade.core.PropertiesManager;
+import cadelac.framework.blade.core.Store;
 import cadelac.framework.blade.core.code.compiler.DynamicCompiler;
 import cadelac.framework.blade.core.dispatch.Patch;
 import cadelac.framework.blade.core.monitor.Monitor;
@@ -118,4 +119,5 @@ public class Framework {
 
 	public static final CommandSwitch $arg = new CommandSwitch();
 	public static final Patch $dispatch = new Patch();
+	public static final Store $store = Store.create();
 }

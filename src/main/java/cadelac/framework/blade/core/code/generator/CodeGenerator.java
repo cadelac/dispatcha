@@ -7,9 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
-
-import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
@@ -22,7 +19,7 @@ import cadelac.framework.blade.facility.db.annotation.InflateAs;
 import cadelac.framework.blade.facility.db.annotation.MarshallNo;
 import cadelac.framework.blade.facility.db.annotation.TableName;
 
-public class CodeGenerator {
+public class CodeGenerator extends LowLevelGenerator {
 
 	private static class SymbolTable {
 		
@@ -102,7 +99,6 @@ public class CodeGenerator {
 			}
 		}
 		
-		
 		private void processSetter(final Method method, SymbolEntry symbolEntry) {
 			symbolEntry._setMethodName = method.getName();
 		}
@@ -124,7 +120,8 @@ public class CodeGenerator {
 		private final Map<String,SymbolEntry> symbols;
 	}
 
-	public static String generateSourceCode(final Class<?> protoClass_) {
+	@Override
+	public String generateSourceCode(final Class<?> protoClass_) {
 		
 		final String protoClassName = protoClass_.getSimpleName(); // name of interface
 		final String concreteClassName = protoClassName + "Simple"; // name of concreteClass
@@ -132,7 +129,7 @@ public class CodeGenerator {
 		final SymbolTable symbolTable = new SymbolTable();
 		symbolTable.populate(protoClass_);
 
-		final CodeGenerator cg = new CodeGenerator();
+		final CodeGenerator cg = this;
 		cg
 		
 		// package declaration
@@ -172,7 +169,6 @@ public class CodeGenerator {
 			final TableName tableName = protoClass_.getAnnotation(TableName.class);
 			if (tableName != null) {
 				final String tableNameValue = tableName.value();
-				logger.debug(String.format("Prototype class %s has annotation TableName: %s", protoClassName, tableNameValue));
 				code.append(String.format("\n@TableName(\"%s\")", tableNameValue));
 			}
 			
@@ -232,39 +228,9 @@ public class CodeGenerator {
 	}
 
 	public CodeGenerator() {
-		_code = new StringBuilder();
+		super();
 	}
 	
-	public String getCode() {
-		return _code.toString();
-	}
-	
-	private CodeGenerator addPackage(final Class<?> protoClass_) {
-		_code.append(String.format(
-				"package %s;\n"
-				, protoClass_.getPackage().getName()));
-		return this;
-	}
-	
-	private CodeGenerator addImport(final Class<?> importClass_) {
-		_code.append(String.format(
-				"import %s.%s;\n"
-				, importClass_.getPackage().getName()
-				, importClass_.getSimpleName()));
-		return this;
-	}
-	
-	private CodeGenerator addImport(final String importString_) {
-		_code.append(String.format(
-				"import %s;\n"
-				, importString_));
-		return this;
-	}
-	
-	private CodeGenerator addCode(final Consumer<StringBuilder> consumer_) {
-		consumer_.accept(_code);
-		return this;
-	}
 
 	private CodeGenerator addGetAndSetMethods(final SymbolTable.SymbolEntry symbolEntry) {
 		// add get method
@@ -279,8 +245,11 @@ public class CodeGenerator {
 		/*
 		// no longer any need to set annotation @ColumnName on set method
 		// because code generator now adds annotation on the data-member declaration
-		if (symbolEntry._annotationColumnNameValue != null && symbolEntry._annotationColumnNameValue.length()>0)
-			_code.append(String.format("    @ColumnName(\"%s\")\n", symbolEntry._annotationColumnNameValue));
+		if (symbolEntry._annotationColumnNameValue != null 
+				&& symbolEntry._annotationColumnNameValue.length()>0)
+			_code.append(String.format(
+				"    @ColumnName(\"%s\")\n"
+				, symbolEntry._annotationColumnNameValue));
 		*/
 		_code.append(
 				"    @Override\n" +
@@ -319,14 +288,5 @@ public class CodeGenerator {
 				, symbolEntry_._dataMemberName));		
 		return this;
 	}
-	
-	private CodeGenerator addLinebreak(final int count_) {
-		for (int i=0; i<count_; ++i)
-			_code.append("\n");
-		return this;
-	}
-	
-	static final Logger logger = Logger.getLogger(CodeGenerator.class);
-			
-	private final StringBuilder _code;
+
 }
