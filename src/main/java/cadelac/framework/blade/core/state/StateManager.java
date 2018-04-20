@@ -49,7 +49,9 @@ public class StateManager {
 		final S lookedUpState = getState(stateId);
 		
 		if (lookedUpState == null) { // not found
-			final S providedState = policy_.stateNotFoundBehavior(stateProvider_);
+			final S providedState = policy_.stateNotFoundBehavior(
+					stateProvider_
+					, stateId);
 			if (providedState != null)
 				installState(providedState);
 			return providedState;

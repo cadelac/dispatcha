@@ -7,7 +7,8 @@ public interface StatePolicy {
 	// behavior when state is not found
 	<S extends State> 
 	S stateNotFoundBehavior(
-			CanProvideState<S> stateProvider_) 
+			CanProvideState<S> stateProvider_
+			, final StateId stateId_) 
 					throws Exception;
 	
 	// behavior when state is found
@@ -21,7 +22,8 @@ public interface StatePolicy {
 		@Override
 		public <S extends State> 
 		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
+				CanProvideState<S> stateProvider_
+				, final StateId stateId_) 
 						throws Exception {
 			return stateProvider_.getState();
 		}
@@ -38,9 +40,13 @@ public interface StatePolicy {
 		@Override
 		public <S extends State> 
 		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
+				CanProvideState<S> stateProvider_
+				, final StateId stateId_) 
 						throws Exception {
-			throw new StateException("State not found: must already exist");
+			throw new StateException(
+					String.format(
+							"State not found, must already exist: %s"
+							, stateId_.getId()));
 		}
 		@Override
 		public <S extends State> 
@@ -55,7 +61,8 @@ public interface StatePolicy {
 		@Override
 		public <S extends State> 
 		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
+				CanProvideState<S> stateProvider_
+				, final StateId stateId_) 
 						throws Exception {
 			return stateProvider_.getState();
 		}
@@ -75,7 +82,8 @@ public interface StatePolicy {
 		@Override
 		public <S extends State> 
 		S stateNotFoundBehavior(
-				CanProvideState<S> stateProvider_) 
+				CanProvideState<S> stateProvider_
+				, final StateId stateId_) 
 						throws Exception {
 			// don't even use the stateProvider_
 			// just signal our intent to ignore processing
