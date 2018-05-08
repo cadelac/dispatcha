@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.state.StateId;
 import cadelac.framework.blade.core.state.StatePolicy;
 
@@ -23,17 +24,27 @@ public class SerializedTransaction {
 		
 		if (serializedTransactionState != null) {
 			synchronized (serializedTransactionState) {
-				DbCommConnection dbCommConnection = 
+				final DbCommConnection dbCommConnection = 
 						serializedTransactionState.getDbCommConnection();
-				try {
-					script_.run(dbCommConnection);
-					dbCommConnection.getConnection().commit();
+				if (dbCommConnection == null 
+						|| !dbCommConnection.getIsInitialized()
+						|| !dbCommConnection.getIsConnected()) {
+					throw new InitializationException(String.format(
+							"%s exception: database not initialized/open; stateId %s"
+							, SerializedTransaction.class.getSimpleName()
+							, stateId_));
 				}
-				catch (SQLException e) {
-					logger.warn(String.format(
-							"transaction exception: rolling back\n%s"
-							, e.getMessage()));
-					dbCommConnection.getConnection().rollback();
+				else {
+					try {
+						script_.run(dbCommConnection);
+						dbCommConnection.getConnection().commit();
+					}
+					catch (SQLException e) {
+						logger.warn(String.format(
+								"transaction exception: rolling back\n%s"
+								, e.getMessage()));
+						dbCommConnection.getConnection().rollback();
+					}
 				}
 			}
 		}
