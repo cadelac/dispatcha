@@ -14,6 +14,7 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -70,6 +71,9 @@ public abstract class MarshallableBase
 						}
 						else if (fieldType.getComponentType() == Integer.class) {
 							marshallIntegerArray(field, jbuilder);
+						}
+						else if (fieldType.getComponentType() == Double.class) {
+							marshallDoubleArray(field, jbuilder);
 						}
 						else { // assume it is an array of some arbitrary kind of object
 							marshallObjectArray(field, jbuilder);
@@ -229,6 +233,9 @@ public abstract class MarshallableBase
 							else if (fieldType.getComponentType() == Integer.class) {
 								unmarshallIntegerArray(field, jo_);
 							}
+							else if (fieldType.getComponentType() == Double.class) {
+								unmarshallDoubleArray(field, jo_);
+							}
 							else { // assume it is an array of some arbitrary kind of object
 								unmarshallObjectArray(field, jo_);
 							}
@@ -367,6 +374,18 @@ public abstract class MarshallableBase
 		  }		
 	}
 	
+	private void marshallDoubleArray(final Field field, final JsonObjectBuilder jbuilder) 
+			throws IllegalArgumentException, IllegalAccessException {
+		  final Double[] series = (Double[]) getField(field);
+		  if (series != null) {
+			  final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+			  for (Double s : series)
+				  arrayBuilder.add(Json.createObjectBuilder().add(DOUBLE_ARRAY_ELEMENT, s));
+			  jbuilder.add(field.getName(), arrayBuilder);
+		  }		
+	}
+	
+	
 	
 	private void marshallObjectArray(Field field, final JsonObjectBuilder jbuilder) 
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -433,6 +452,19 @@ public abstract class MarshallableBase
 		setField(field, series);	
 	}
 	
+	private void unmarshallDoubleArray(final Field field, final JsonObject jo_) 
+			throws JsonMessageException, IllegalAccessException {
+		final JsonArray jarray = jo_.getJsonArray(field.getName());
+		final Double[] series = new Double[jarray.size()];
+		for (int i=0; i<jarray.size(); ++i) {
+			JsonObject job = jarray.getJsonObject(i);
+			JsonNumber jnumber = job.getJsonNumber(DOUBLE_ARRAY_ELEMENT);
+			series[i] =  jnumber.doubleValue();
+		}
+		setField(field, series);	
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	private void unmarshallObjectArray(final Field field, final JsonObject jo_) 
 			throws FrameworkException, Exception {
@@ -475,6 +507,7 @@ public abstract class MarshallableBase
 	}
 	
 	private static final String INTEGER_ARRAY_ELEMENT = "e";
+	private static final String DOUBLE_ARRAY_ELEMENT = "e";
 	private static final String STRING_ARRAY_ELEMENT = "e";
 	
 	private static final Logger logger = Logger.getLogger(MarshallableBase.class);
