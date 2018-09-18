@@ -6,8 +6,7 @@ import java.io.File;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class DefaultCompiler implements DynamicCompiler {
 
@@ -95,7 +94,7 @@ public class DefaultCompiler implements DynamicCompiler {
 		return _classDir;
 	}
 
-	private static final Logger logger = LogManager.getLogger(DefaultCompiler.class);
+	private static final Logger logger = Logger.getLogger(DefaultCompiler.class);
 
 	private static final String REPOSITORY_DIR = ".repo";
 	private static final String SOURCE_DIR = "src";

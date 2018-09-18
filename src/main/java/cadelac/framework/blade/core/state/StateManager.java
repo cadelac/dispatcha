@@ -3,8 +3,8 @@ package cadelac.framework.blade.core.state;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import cadelac.framework.blade.core.exception.ArgumentException;
 import cadelac.framework.blade.core.exception.InitializationException;
 
@@ -71,7 +71,7 @@ public class StateManager {
 	
 	
 	
-	private static final Logger logger = LogManager.getLogger(StateManager.class);
+	private static final Logger logger = Logger.getLogger(StateManager.class);
 	
 	private static final Map<String,State> _states = new ConcurrentHashMap<String,State>();
 }

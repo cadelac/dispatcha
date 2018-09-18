@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.core.exception.FrameworkException;
 

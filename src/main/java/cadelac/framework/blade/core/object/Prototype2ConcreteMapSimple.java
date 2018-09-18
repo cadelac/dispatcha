@@ -7,8 +7,8 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.code.compiler.DynamicCompiler;
@@ -94,7 +94,7 @@ public class Prototype2ConcreteMapSimple implements Prototype2ConcreteMap {
 	}
 	
 	
-	private static final Logger logger = LogManager.getLogger(Prototype2ConcreteMapSimple.class);
+	private static final Logger logger = Logger.getLogger(Prototype2ConcreteMapSimple.class);
 	
 	private final Map<Class<? extends Generated>,Class<? extends Generated>> _map;
 	private final Map<Class<? extends Generated>,Class<? extends Generated>> _reverseMap;

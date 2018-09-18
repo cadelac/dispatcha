@@ -1,7 +1,7 @@
 package cadelac.framework.blade.facility.db;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 /**
  * Base class for Select queries
  * @author cadelac
@@ -24,5 +24,5 @@ public abstract class QueryBase implements ExecutableQuery {
 
 	private final String _query;
 	
-	private static final Logger logger = LogManager.getLogger(QueryBase.class);
+	private static final Logger logger = Logger.getLogger(QueryBase.class);
 }

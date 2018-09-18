@@ -18,8 +18,8 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
@@ -510,5 +510,5 @@ public abstract class MarshallableBase
 	private static final String DOUBLE_ARRAY_ELEMENT = "e";
 	private static final String STRING_ARRAY_ELEMENT = "e";
 	
-	private static final Logger logger = LogManager.getLogger(MarshallableBase.class);
+	private static final Logger logger = Logger.getLogger(MarshallableBase.class);
 }

@@ -5,8 +5,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import cadelac.framework.blade.comm.AbstractCommConnection;
 import cadelac.framework.blade.comm.CommCredentials;
 import cadelac.framework.blade.comm.CommUrl;
@@ -120,7 +120,7 @@ public abstract class DbCommConnection extends AbstractCommConnection {
         logger.warn("Exception: " + ex_.getMessage());
     } 
     
-    private static final Logger logger = LogManager.getLogger(DbCommConnection.class);
+    private static final Logger logger = Logger.getLogger(DbCommConnection.class);
     
     private DbCommUrl _url;
     private CommCredentials _credentials;

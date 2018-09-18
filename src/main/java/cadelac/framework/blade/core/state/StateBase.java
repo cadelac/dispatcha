@@ -1,7 +1,7 @@
 package cadelac.framework.blade.core.state;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import cadelac.framework.blade.core.IdentifiedBase;
 
 public abstract class StateBase extends IdentifiedBase implements State {
@@ -11,5 +11,5 @@ public abstract class StateBase extends IdentifiedBase implements State {
 		logger.info(String.format("created state [%s]", id_));
 	}
 	
-	private static final Logger logger = LogManager.getLogger(State.class);
+	private static final Logger logger = Logger.getLogger(State.class);
 }
