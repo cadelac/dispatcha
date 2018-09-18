@@ -1,11 +1,12 @@
 package cadelac.framework.blade.app;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import cadelac.framework.blade.Framework;
 import static cadelac.framework.blade.Framework.$arg;
@@ -36,6 +37,7 @@ public abstract class ApplicationSimple
 	
 	public void start() 
 			throws FrameworkException, Exception {
+		
 		// boot up the framework
 		boot(); 
 		logger.info("booted up framework");
@@ -49,9 +51,6 @@ public abstract class ApplicationSimple
 			throws Exception {
 		
 		// basic logger configuration
-		BasicConfigurator.configure();
-		logger.info("configured logger with basic configuration");
-		
 		Framework.setApplication(this);
 
 		captureCommandSwitches();
@@ -96,7 +95,10 @@ public abstract class ApplicationSimple
 	private void configureLogger() 
 			throws Exception {
 		final String loggerConfigFile = getLoggerConfigFile();
-		PropertyConfigurator.configure(loggerConfigFile);
+//		System.setProperty("log4j.configurationFile",loggerConfigFile);
+		LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+		File file = new File(loggerConfigFile);		
+		context.setConfigLocation(file.toURI());		
 		logger.info(String.format(
 				"configured logger with: [%s]"
 				, loggerConfigFile));
@@ -223,7 +225,7 @@ public abstract class ApplicationSimple
 		return tps;
 	}
 	
-	private static final Logger logger = Logger.getLogger(ApplicationSimple.class);
+	private static final Logger logger = LogManager.getLogger(ApplicationSimple.class);
 	
 	
 	private final String[] _arguments;
