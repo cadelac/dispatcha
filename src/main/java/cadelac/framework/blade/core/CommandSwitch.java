@@ -3,7 +3,8 @@ package cadelac.framework.blade.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.core.exception.ArgumentException;
 
@@ -53,7 +54,7 @@ public class CommandSwitch {
 		}			
 	}
 
-	private static final Logger logger = Logger.getLogger(CommandSwitch.class);
+	private static final Logger logger = LogManager.getLogger(CommandSwitch.class);
 	
 	private String[] _arguments;
 	private final Map<String,String> _map;

@@ -1,7 +1,7 @@
 package cadelac.framework.blade.core.config;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.comm.CommCredentials;
 import cadelac.framework.blade.comm.websocket.WebsocketConfigInfo;
@@ -111,5 +111,5 @@ public class Configurator {
 		return getConfigSetting(WebsocketConfigInfo.class, propertyName_);
 	}
 
-	private static final Logger logger = Logger.getLogger(Configurator.class);
+	private static final Logger logger = LogManager.getLogger(Configurator.class);
 }

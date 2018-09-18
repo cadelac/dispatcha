@@ -2,8 +2,8 @@ package cadelac.framework.blade.core.dispatch;
 
 import java.util.concurrent.Future;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.SystemException;
 import cadelac.framework.blade.core.invocation.Response;
@@ -226,5 +226,5 @@ public class Dispatch {
 		};
 	}
 	
-	private static final Logger logger = Logger.getLogger(Dispatch.class);
+	private static final Logger logger = LogManager.getLogger(Dispatch.class);
 }
