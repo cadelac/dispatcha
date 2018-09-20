@@ -5,8 +5,8 @@ import static cadelac.framework.blade.Framework.$store;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import cadelac.framework.blade.core.exception.InitializationException;
 import cadelac.framework.blade.core.state.StateId;
 import cadelac.framework.blade.core.state.StatePolicy;
@@ -77,5 +77,5 @@ public class SerializedTransaction {
 	}
 
 
-	private static final Logger logger = Logger.getLogger(SerializedTransaction.class);
+	private static final Logger logger = LogManager.getLogger(SerializedTransaction.class);
 }

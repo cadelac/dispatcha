@@ -8,7 +8,8 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.websocket.EncodeException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.message.Message;
@@ -51,5 +52,5 @@ public class JsonFormat {
 	}
 	
 	
-	private static final Logger logger = Logger.getLogger(JsonFormat.class);
+	private static final Logger logger = LogManager.getLogger(JsonFormat.class);
 }

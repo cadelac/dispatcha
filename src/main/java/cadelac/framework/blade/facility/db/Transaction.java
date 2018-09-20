@@ -2,8 +2,8 @@ package cadelac.framework.blade.facility.db;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 public class Transaction {
 	
 	public Transaction(final DbConfigInfo dbConfigInfo_) {
@@ -37,7 +37,7 @@ public class Transaction {
 	}
 
 	
-	private static final Logger logger = Logger.getLogger(Transaction.class);
+	private static final Logger logger = LogManager.getLogger(Transaction.class);
 	
 	private final DbConfigInfo _dbConfigInfo;
 	private DbCommConnection _dbCommConnection;
