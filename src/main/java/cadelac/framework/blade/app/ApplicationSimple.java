@@ -47,6 +47,12 @@ public abstract class ApplicationSimple
 		init();
 	}
 	
+	public void stop() {
+	}
+	
+	public void restart() {
+	}
+	
 	private void boot() 
 			throws Exception {
 		
